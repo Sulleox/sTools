@@ -25,6 +25,10 @@ Shader "sTools/SnowShader"
 		_otherMet("Other Metallic Map", 2D) = "white" {}
 		_otherBumpMap("Other Normal Map", 2D) = "bump" {}
 
+		//Glitter Map
+		_glitterScreenSpace("Screen Glitter Map", 2D) = "black" {}
+		_glitterWorldSpace("World Glitter Map", 2D) = "black" {}
+
 		//Noise
 		_noiseTex("Noise Map", 2D) = "white" {}
 	}
@@ -45,6 +49,7 @@ Shader "sTools/SnowShader"
 			float2 uv_snowTex;
 			float2 uv_otherTex;
 			float2 uv_noiseTex;
+			float4 screenPos;
 			float _SnowMask;
 		};
 
@@ -52,7 +57,7 @@ Shader "sTools/SnowShader"
 		float _SnowAmount;
 		float _SnowThreshold;
 
-		//Snow
+		//Snow Texture
 		float4 _snowColor;
 		sampler2D _snowTex;
 		sampler2D _snowMet;
@@ -60,13 +65,17 @@ Shader "sTools/SnowShader"
 		half _snowGlossiness;
 		half _snowMetallic;
 
-		//Other
+		//Other Texture
 		float4 _otherColor;
 		sampler2D _otherTex;
 		sampler2D _otherMet;
 		sampler2D _otherBumpMap;
 		half _otherGlossiness;
 		half _otherMetallic;
+
+		//Glitter Texture
+		sampler2D _glitterScreenSpace;
+		sampler2D _glitterWorldSpace;
 
 		sampler2D _noiseTex;
 		float _SnowMask;
@@ -78,14 +87,17 @@ Shader "sTools/SnowShader"
 		{
 			//Enable input save in Vertex Edit.
 			UNITY_INITIALIZE_OUTPUT(Input, o);
+
 			//Generate worldNormal & SnowMask
 			_SnowVector = normalize(_SnowVector);
 			float3 worldNormal = UnityObjectToWorldNormal(v.normal);
 			_SnowMask = saturate(saturate(dot(_SnowVector, worldNormal)) * _SnowThreshold);
+
 			//Add bump to Vertex
 			v.vertex.xyz = mul(unity_ObjectToWorld, v.vertex);
 			v.vertex.xyz += float3(0.0, 1.0, 0.0) * _SnowAmount * _SnowMask;
 			v.vertex.xyz = mul(unity_WorldToObject, v.vertex);
+
 			//Save SnowMask
 			o._SnowMask = _SnowMask;
 
@@ -93,6 +105,13 @@ Shader "sTools/SnowShader"
 
 		void surf(Input IN, inout SurfaceOutputStandard o)
 		{
+			//Glitter
+			float w = max(0.0001, IN.screenPos.w);
+			float2 ScreenUV = IN.screenPos.xy / w;
+			fixed4 glitterScreen = tex2D(_glitterScreenSpace, ScreenUV);
+			fixed4 glitterWorld = tex2D(_glitterWorldSpace, IN.uv_snowTex);
+			o.Emission = glitterScreen * glitterWorld;
+
 			//Albedo
 			fixed4 snowAlbedo = tex2D(_snowTex, IN.uv_snowTex) *_snowColor;
 			fixed4 otherAlbedo = tex2D(_otherTex, IN.uv_otherTex) *_otherColor;
@@ -105,6 +124,7 @@ Shader "sTools/SnowShader"
 			o.Metallic = lerp(otherMetallic, snowMetallic, IN._SnowMask);
 			o.Smoothness = lerp(otherMetallic.a, otherMetallic.a, IN._SnowMask);
 
+			//Normal
 			fixed4 snowNormal = tex2D(_snowBumpMap, IN.uv_snowTex);
 			fixed4 otherNormal = tex2D(_otherBumpMap, IN.uv_otherTex);
 			o.Normal = UnpackNormal(lerp(otherNormal, snowNormal, IN._SnowMask));
