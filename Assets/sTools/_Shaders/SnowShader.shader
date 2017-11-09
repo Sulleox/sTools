@@ -26,8 +26,7 @@ Shader "sTools/SnowShader"
 		_otherBumpMap("Other Normal Map", 2D) = "bump" {}
 
 		//Glitter Map
-		_glitterScreenSpace("Screen Glitter Map", 2D) = "black" {}
-		_glitterWorldSpace("World Glitter Map", 2D) = "black" {}
+		_glitterMap("Glitter Map", 2D) = "black" {}
 
 		//Noise
 		_noiseTex("Noise Map", 2D) = "white" {}
@@ -74,8 +73,7 @@ Shader "sTools/SnowShader"
 		half _otherMetallic;
 
 		//Glitter Texture
-		sampler2D _glitterScreenSpace;
-		sampler2D _glitterWorldSpace;
+		sampler2D _glitterMap;
 
 		sampler2D _noiseTex;
 		float _SnowMask;
@@ -108,9 +106,9 @@ Shader "sTools/SnowShader"
 			//Glitter
 			float w = max(0.0001, IN.screenPos.w);
 			float2 ScreenUV = IN.screenPos.xy / w;
-			fixed4 glitterScreen = tex2D(_glitterScreenSpace, ScreenUV);
-			fixed4 glitterWorld = tex2D(_glitterWorldSpace, IN.uv_snowTex);
-			o.Emission = glitterScreen * glitterWorld;
+			fixed4 glitterScreen = tex2D(_glitterMap, ScreenUV);
+			fixed4 glitterWorld = tex2D(_glitterMap, IN.uv_snowTex);
+			o.Emission = glitterScreen * glitterWorld * IN._SnowMask;
 
 			//Albedo
 			fixed4 snowAlbedo = tex2D(_snowTex, IN.uv_snowTex) *_snowColor;
