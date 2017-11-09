@@ -23,6 +23,7 @@ ExportedObj/
 *.booproj
 *.svd
 *.pdb
+*.meta
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -33,9 +34,3 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-Assets/DevTest/
-Assets/DevTest.meta
-Assets/OnHold/
-Assets/OnHold.meta
-Assets/NotSyncedByGit/
-Assets/NotSyncedByGit.meta
