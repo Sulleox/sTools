@@ -78,12 +78,15 @@ Shader "sTools/SnowShader"
 		{
 			//Enable input save in Vertex Edit.
 			UNITY_INITIALIZE_OUTPUT(Input, o);
-			//Generate worldNormal & apply it to the vertex position
+			//Generate worldNormal & SnowMask
 			_SnowVector = normalize(_SnowVector);
 			float3 worldNormal = UnityObjectToWorldNormal(v.normal);
-			_SnowMask = saturate(saturate(dot(_SnowVector, worldNormal)) / _SnowThreshold);
-			//v.vertex.xyz = mul(unity_ObjectToWorld, v.vertex);
+			_SnowMask = saturate(saturate(dot(_SnowVector, worldNormal)) * _SnowThreshold);
+			//Add bump to Vertex
+			v.vertex.xyz = mul(unity_ObjectToWorld, v.vertex);
 			v.vertex.xyz += float3(0.0, 1.0, 0.0) * _SnowAmount * _SnowMask;
+			v.vertex.xyz = mul(unity_WorldToObject, v.vertex);
+			//Save SnowMask
 			o._SnowMask = _SnowMask;
 
 		}
@@ -102,7 +105,10 @@ Shader "sTools/SnowShader"
 			o.Metallic = lerp(otherMetallic, snowMetallic, IN._SnowMask);
 			o.Smoothness = lerp(otherMetallic.a, otherMetallic.a, IN._SnowMask);
 
-			//o.Normal = UnpackNormal();
+			//Normal Map
+			fixed4 snowNormal = tex2D(_snowBumpMap, IN.uv_snowTex);
+			fixed4 otherNormal = tex2D(_otherBumpMap, IN.uv_otherTex);
+			o.Normal = UnpackNormal(lerp(otherNormal, snowNormal, IN._SnowMask));
 
 			o.Alpha = _snowColor.a;
 		}
