@@ -1,4 +1,6 @@
-﻿Shader "sTools/SnowShader"
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+Shader "sTools/SnowShader"
 {
 	Properties
 	{
@@ -22,6 +24,9 @@
 		_otherMetallic("Other Metallic", Range(0,1)) = 0.0
 		_otherMet("Other Metallic Map", 2D) = "white" {}
 		_otherBumpMap("Other Normal Map", 2D) = "bump" {}
+
+		//Noise
+		_noiseTex("Noise Map", 2D) = "white" {}
 	}
 		SubShader
 	{
@@ -33,12 +38,13 @@
 		#pragma surface surf Standard fullforwardshadows vertex:vert addshadow
 
 		// Use shader model 3.0 target, to get nicer looking lighting
-		#pragma target 3.0
+		#pragma target 5.0
 
 		struct Input
 		{
 			float2 uv_snowTex;
 			float2 uv_otherTex;
+			float2 uv_noiseTex;
 			float _SnowMask;
 		};
 
@@ -62,6 +68,7 @@
 		half _otherGlossiness;
 		half _otherMetallic;
 
+		sampler2D _noiseTex;
 		float _SnowMask;
 
 		UNITY_INSTANCING_CBUFFER_START(Props)
@@ -72,9 +79,11 @@
 			//Enable input save in Vertex Edit.
 			UNITY_INITIALIZE_OUTPUT(Input, o);
 			//Generate worldNormal & apply it to the vertex position
+			_SnowVector = normalize(_SnowVector);
 			float3 worldNormal = UnityObjectToWorldNormal(v.normal);
 			_SnowMask = saturate(saturate(dot(_SnowVector, worldNormal)) / _SnowThreshold);
-			v.vertex.xyz += v.normal * _SnowAmount * _SnowMask;
+			//v.vertex.xyz = mul(unity_ObjectToWorld, v.vertex);
+			v.vertex.xyz += float3(0.0, 1.0, 0.0) * _SnowAmount * _SnowMask;
 			o._SnowMask = _SnowMask;
 
 		}
@@ -84,14 +93,15 @@
 			//Albedo
 			fixed4 snowAlbedo = tex2D(_snowTex, IN.uv_snowTex) *_snowColor;
 			fixed4 otherAlbedo = tex2D(_otherTex, IN.uv_otherTex) *_otherColor;
-			o.Albedo = lerp(otherAlbedo, snowAlbedo, IN._SnowMask);
+			fixed4 noiseTex = tex2D(_noiseTex, IN.uv_noiseTex);
+			o.Albedo = lerp(otherAlbedo, snowAlbedo, IN._SnowMask * noiseTex);
 
 			//Metallic && Glossiness
 			fixed4 snowMetallic = tex2D(_snowMet, IN.uv_snowTex) * _snowMetallic;
 			fixed4 otherMetallic = tex2D(_otherMet, IN.uv_otherTex) * _otherMetallic;
-
-			o.Metallic = lerp(otherMetallic.r, snowMetallic.r, IN._SnowMask);
+			o.Metallic = lerp(otherMetallic, snowMetallic, IN._SnowMask);
 			o.Smoothness = lerp(otherMetallic.a, otherMetallic.a, IN._SnowMask);
+
 			//o.Normal = UnpackNormal();
 
 			o.Alpha = _snowColor.a;
