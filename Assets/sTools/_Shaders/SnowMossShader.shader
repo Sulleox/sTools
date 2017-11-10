@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "sTools/SnowShader"
+Shader "sTools/SnowMossShader"
 {
 	Properties
 	{
@@ -132,5 +132,5 @@ Shader "sTools/SnowShader"
 		ENDCG
 	}
 		FallBack "Diffuse"
-		CustomEditor "SnowShaderEditor"
+		CustomEditor "SnowMossShaderEditor"
 }

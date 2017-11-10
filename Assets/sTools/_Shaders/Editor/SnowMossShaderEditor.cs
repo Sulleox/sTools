@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 
-public class SnowShaderEditor : ShaderGUI
+public class SnowMossShaderEditor : ShaderGUI
 {
     //Properties
     MaterialProperty snowVector = null;
@@ -43,6 +43,8 @@ public class SnowShaderEditor : ShaderGUI
         m_MaterialEditor.ShaderProperty(snowThreshold, "Snow/Moss Threshold");
         m_MaterialEditor.ShaderProperty(snowAmout, "Snow/Moss Amount");
 
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
         showSnowProperties = EditorGUILayout.Foldout(showSnowProperties, "Show Snow/Grass Texture Properties");
         //Snow Properties
         if (showSnowProperties)
@@ -55,6 +57,7 @@ public class SnowShaderEditor : ShaderGUI
             m_MaterialEditor.ShaderProperty(snowBumpMap, "Snow/Moss Normal Map");
         }
 
+
         showBaseProperties = EditorGUILayout.Foldout(showBaseProperties, "Show Base Texture Properties");
         //Snow Properties
         if (showBaseProperties)
@@ -66,6 +69,8 @@ public class SnowShaderEditor : ShaderGUI
             m_MaterialEditor.ShaderProperty(otherGlosRange, "Base Glossiness Range");
             m_MaterialEditor.ShaderProperty(otherBumpMap, "Base Normal Map");
         }
+
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
         m_MaterialEditor.ShaderProperty(glitterMap, "Glitter Map");
         m_MaterialEditor.ShaderProperty(noiseMap, "Noise Map");
