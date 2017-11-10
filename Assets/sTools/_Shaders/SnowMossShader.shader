@@ -15,6 +15,7 @@ Shader "sTools/SnowMossShader"
 		_snowGlossiness("Snow Smoothness", Range(0,1)) = 0.5
 		_snowMetallic("Snow Metallic", Range(0,1)) = 0.0
 		_snowMet("Snow Metallic Map", 2D) = "white" {}
+		_snowAO("Snow AO Map", 2D) = "white" {}
 		_snowBumpMap("Snow Normal Map", 2D) = "bump" {}
 
 		//Other Texture
@@ -23,6 +24,7 @@ Shader "sTools/SnowMossShader"
 		_otherGlossiness("Other Smoothness", Range(0,1)) = 0.5
 		_otherMetallic("Other Metallic", Range(0,1)) = 0.0
 		_otherMet("Other Metallic Map", 2D) = "white" {}
+		_otherAO("Other AO Map", 2D) = "white" {}
 		_otherBumpMap("Other Normal Map", 2D) = "bump" {}
 
 		//Glitter Map
@@ -60,6 +62,7 @@ Shader "sTools/SnowMossShader"
 		float4 _snowColor;
 		sampler2D _snowTex;
 		sampler2D _snowMet;
+		sampler2D _snowAO;
 		sampler2D _snowBumpMap;
 		half _snowGlossiness;
 		half _snowMetallic;
@@ -68,6 +71,7 @@ Shader "sTools/SnowMossShader"
 		float4 _otherColor;
 		sampler2D _otherTex;
 		sampler2D _otherMet;
+		sampler2D _otherAO;
 		sampler2D _otherBumpMap;
 		half _otherGlossiness;
 		half _otherMetallic;
@@ -103,12 +107,6 @@ Shader "sTools/SnowMossShader"
 
 		void surf(Input IN, inout SurfaceOutputStandard o)
 		{
-			//Glitter
-			float w = max(0.0001, IN.screenPos.w);
-			float2 ScreenUV = IN.screenPos.xy / w;
-			fixed4 glitterScreen = tex2D(_glitterMap, ScreenUV);
-			fixed4 glitterWorld = tex2D(_glitterMap, IN.uv_snowTex);
-			o.Emission = glitterScreen * glitterWorld * IN._SnowMask;
 
 			//Albedo
 			fixed4 snowAlbedo = tex2D(_snowTex, IN.uv_snowTex) *_snowColor;
@@ -122,10 +120,22 @@ Shader "sTools/SnowMossShader"
 			o.Metallic = lerp(otherMetallic, snowMetallic, IN._SnowMask);
 			o.Smoothness = lerp(otherMetallic.a, otherMetallic.a, IN._SnowMask);
 
+			//Ambient Occlusion
+			fixed4 snowOcclusion = tex2D(_snowAO, IN.uv_snowTex);
+			fixed4 otherOclusion = tex2D(_otherAO, IN.uv_otherTex);
+			o.Occlusion = lerp(otherOclusion, snowOcclusion, IN._SnowMask);
+
 			//Normal
 			fixed4 snowNormal = tex2D(_snowBumpMap, IN.uv_snowTex);
 			fixed4 otherNormal = tex2D(_otherBumpMap, IN.uv_otherTex);
 			o.Normal = UnpackNormal(lerp(otherNormal, snowNormal, IN._SnowMask));
+
+			//Glitter
+			float w = max(0.0001, IN.screenPos.w);
+			float2 ScreenUV = IN.screenPos.xy / w;
+			fixed4 glitterScreen = tex2D(_glitterMap, ScreenUV);
+			fixed4 glitterWorld = tex2D(_glitterMap, IN.uv_snowTex);
+			o.Emission = glitterScreen * glitterWorld * IN._SnowMask;
 
 			o.Alpha = _snowColor.a;
 		}

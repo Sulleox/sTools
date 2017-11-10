@@ -16,6 +16,7 @@ public class SnowMossShaderEditor : ShaderGUI
     MaterialProperty snowMetRange = null;
     MaterialProperty snowGlosRange = null;
     MaterialProperty snowMetallic = null;
+    MaterialProperty snowAO = null;
     MaterialProperty snowBumpMap = null;
 
     MaterialProperty otherColor = null;
@@ -23,6 +24,7 @@ public class SnowMossShaderEditor : ShaderGUI
     MaterialProperty otherMetRange = null;
     MaterialProperty otherGlosRange = null;
     MaterialProperty otherMetallic = null;
+    MaterialProperty otherAO = null;
     MaterialProperty otherBumpMap = null;
 
     MaterialProperty glitterMap = null;
@@ -54,6 +56,7 @@ public class SnowMossShaderEditor : ShaderGUI
             m_MaterialEditor.ShaderProperty(snowMetallic, "Snow/Moss Metallic Map");
             m_MaterialEditor.ShaderProperty(snowMetRange, "Snow/Moss Metallic Range");
             m_MaterialEditor.ShaderProperty(snowGlosRange, "Snow/Moss Glossiness Range");
+            m_MaterialEditor.ShaderProperty(snowAO, "Snow AO Map");
             m_MaterialEditor.ShaderProperty(snowBumpMap, "Snow/Moss Normal Map");
         }
 
@@ -67,6 +70,7 @@ public class SnowMossShaderEditor : ShaderGUI
             m_MaterialEditor.ShaderProperty(otherMetallic, "Base Metallic Map");
             m_MaterialEditor.ShaderProperty(otherMetRange, "Base Metallic Range");
             m_MaterialEditor.ShaderProperty(otherGlosRange, "Base Glossiness Range");
+            m_MaterialEditor.ShaderProperty(otherAO, "Base AO Map");
             m_MaterialEditor.ShaderProperty(otherBumpMap, "Base Normal Map");
         }
 
@@ -87,6 +91,7 @@ public class SnowMossShaderEditor : ShaderGUI
         snowGlosRange = FindProperty("_snowGlossiness", properties);
         snowMetRange = FindProperty("_snowMetallic", properties);
         snowMetallic = FindProperty("_snowMet", properties);
+        snowAO = FindProperty("_snowAO", properties);
         snowBumpMap = FindProperty("_snowBumpMap", properties);
 
         otherColor = FindProperty("_otherColor", properties);
@@ -94,6 +99,7 @@ public class SnowMossShaderEditor : ShaderGUI
         otherGlosRange = FindProperty("_otherGlossiness", properties);
         otherMetRange = FindProperty("_otherMetallic", properties);
         otherMetallic = FindProperty("_otherMet", properties);
+        otherAO = FindProperty("_otherAO", properties);
         otherBumpMap = FindProperty("_otherBumpMap", properties);
 
         glitterMap = FindProperty("_glitterMap", properties);

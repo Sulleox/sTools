@@ -1,11 +1,22 @@
 ﻿Shader "sTools/TextureBlend" {
 	Properties 
 	{
-		_Color ("Color", Color) = (1,1,1,1)
-		_MainTex ("Albedo First Texture", 2D) = "white" {}
-		_Glossiness ("Smoothness", Range(0,1)) = 0.5
-		_Metallic ("Metallic", Range(0,1)) = 0.0
-		_SecondTex ("Albedo Second Texture", 2D) = "white"{}
+		//First Texture
+		_FirstColor ("First Color", Color) = (1,1,1,1)
+		_FirstTexture ("First Texture Map", 2D) = "white" {}
+		_FirstMetallicMap("First Metallic Map", 2D) = "black" {}
+		_FirstGlossinessRange ("First Smoothness Range", Range(0,1)) = 0.5
+		_FirstMetallicRange ("First Metallic Range", Range(0,1)) = 0.0
+		_FirstBumpMap("First Texture Normal Map", 2D) = "white"{}
+
+		//Second Texture
+		_SecondColor ("Second Color", Color) = (1,1,1,1)
+		_SecondTexture ("Second Texture Map", 2D) = "white" {}
+		_SecondMetallicMap("Second Metallic Map", 2D) = "black" {}
+		_SecondGlossinessRange ("Second Smoothness Range", Range(0,1)) = 0.5
+		_SecondMetallicRange ("Second Metallic Range", Range(0,1)) = 0.0
+		_SecondBumpMap("Second Texture Normal Map", 2D) = "white"{}
+
 	}
 	SubShader 
 	{
@@ -19,27 +30,28 @@
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
 
-		sampler2D _MainTex;
+		sampler2D _FirstTexture;
 
 		struct Input 
 		{
-			float2 uv_MainTex;
+			float2 uv_FirstTexture;
 		};
 
-		half _Glossiness;
-		half _Metallic;
-		fixed4 _Color;
+		half _FirstGlossiness;
+		half _FirstMetallic;
+		fixed4 _FirstColor;
 
 		UNITY_INSTANCING_CBUFFER_START(Props)
 		UNITY_INSTANCING_CBUFFER_END
 
-		void surf (Input IN, inout SurfaceOutputStandard o) {
+		void surf (Input IN, inout SurfaceOutputStandard o) 
+		{
 			// Albedo comes from a texture tinted by color
-			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+			fixed4 c = tex2D (_FirstTexture, IN.uv_FirstTexture) * _FirstColor;
 			o.Albedo = c.rgb;
 			// Metallic and smoothness come from slider variables
-			o.Metallic = _Metallic;
-			o.Smoothness = _Glossiness;
+			o.Metallic = _FirstMetallic;
+			o.Smoothness = _FirstGlossiness;
 			o.Alpha = c.a;
 		}
 		ENDCG
