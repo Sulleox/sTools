@@ -2,16 +2,16 @@
 {
 	Properties 
 	{
-		_Color ("Color", Color) = (1,1,1,1)
+		_PulseAmount("Pulse Amount", Range(0,1)) = 0.5
+		_PulseSpeed("Pulse Speed", float) = 1
+		_PulseMask ("Pulse Mask", 2D) = "white" {}
+
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_MetallicMap("Metallic Map", 2D) = "black" {} 
 		_GlossinessRange ("Smoothness", Range(0,1)) = 0.5
 		_MetallicRange ("Metallic", Range(0,1)) = 0.0
 		_BumpMap ("Normal Map", 2D) = "bump" {}
 		_AO ("AO Map", 2D) = "white" {}
-		_PulseAmount("Pulse Amount", Range(0,1)) = 0.5
-		_PulseSpeed("Pulse Speed", float) = 1
-		_PulseMask ("Pulse Mask", 2D) = "white" {}
 	}
 	SubShader 
 	{
@@ -38,7 +38,6 @@
 		half _MetallicRange;
 		half _PulseAmount;
 
-		fixed4 _Color;
 		float _PulseSpeed;
 
 		UNITY_INSTANCING_CBUFFER_START(Props)
@@ -53,7 +52,7 @@
 
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
-			o.Albedo = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+			o.Albedo = tex2D (_MainTex, IN.uv_MainTex);
 			o.Metallic = tex2D (_MetallicMap, IN.uv_MainTex).r * _MetallicRange;
 			o.Smoothness = tex2D (_MetallicMap, IN.uv_MainTex).a * _GlossinessRange;
 			o.Occlusion = tex2D (_AO, IN.uv_MainTex);

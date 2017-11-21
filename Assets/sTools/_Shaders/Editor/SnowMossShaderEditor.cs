@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
-using System;
 
 public class SnowMossShaderEditor : ShaderGUI
 {
@@ -11,7 +8,6 @@ public class SnowMossShaderEditor : ShaderGUI
     MaterialProperty snowThreshold = null;
     MaterialProperty snowAmout = null;
 
-    MaterialProperty snowColor = null;
     MaterialProperty snowTexture = null;
     MaterialProperty snowMetRange = null;
     MaterialProperty snowGlosRange = null;
@@ -19,7 +15,6 @@ public class SnowMossShaderEditor : ShaderGUI
     MaterialProperty snowAO = null;
     MaterialProperty snowBumpMap = null;
 
-    MaterialProperty otherColor = null;
     MaterialProperty otherTexture = null;
     MaterialProperty otherMetRange = null;
     MaterialProperty otherGlosRange = null;
@@ -48,10 +43,9 @@ public class SnowMossShaderEditor : ShaderGUI
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
         showSnowProperties = EditorGUILayout.Foldout(showSnowProperties, "Show Snow/Grass Texture Properties");
-        //Snow Properties
+        //Snow Snow/Moss Properties
         if (showSnowProperties)
         {
-            m_MaterialEditor.ShaderProperty(snowColor, "Snow/Moss Color");
             m_MaterialEditor.ShaderProperty(snowTexture, "Snow/Moss Texture");
             m_MaterialEditor.ShaderProperty(snowMetallic, "Snow/Moss Metallic Map");
             m_MaterialEditor.ShaderProperty(snowMetRange, "Snow/Moss Metallic Range");
@@ -62,10 +56,9 @@ public class SnowMossShaderEditor : ShaderGUI
 
 
         showBaseProperties = EditorGUILayout.Foldout(showBaseProperties, "Show Base Texture Properties");
-        //Snow Properties
+        //Snow Base Properties
         if (showBaseProperties)
         {
-            m_MaterialEditor.ShaderProperty(otherColor, "Base Color");
             m_MaterialEditor.ShaderProperty(otherTexture, "Base Texture");
             m_MaterialEditor.ShaderProperty(otherMetallic, "Base Metallic Map");
             m_MaterialEditor.ShaderProperty(otherMetRange, "Base Metallic Range");
@@ -86,7 +79,6 @@ public class SnowMossShaderEditor : ShaderGUI
         snowThreshold = FindProperty("_SnowThreshold", properties);
         snowAmout = FindProperty("_SnowAmount", properties);
 
-        snowColor = FindProperty("_snowColor", properties);
         snowTexture = FindProperty("_snowTex", properties);
         snowGlosRange = FindProperty("_snowGlossiness", properties);
         snowMetRange = FindProperty("_snowMetallic", properties);
@@ -94,7 +86,6 @@ public class SnowMossShaderEditor : ShaderGUI
         snowAO = FindProperty("_snowAO", properties);
         snowBumpMap = FindProperty("_snowBumpMap", properties);
 
-        otherColor = FindProperty("_otherColor", properties);
         otherTexture = FindProperty("_otherTex", properties);
         otherGlosRange = FindProperty("_otherGlossiness", properties);
         otherMetRange = FindProperty("_otherMetallic", properties);

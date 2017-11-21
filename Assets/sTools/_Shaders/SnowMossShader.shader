@@ -10,7 +10,6 @@ Shader "sTools/SnowMossShader"
 		_SnowAmount("Amount", Range(0,0.2)) = 0.0
 
 		//Snow Texture
-		_snowColor("Color", Color) = (1,1,1,1)
 		_snowTex("Snow Texture", 2D) = "white" {}
 		_snowGlossiness("Snow Smoothness", Range(0,1)) = 0.5
 		_snowMetallic("Snow Metallic", Range(0,1)) = 0.0
@@ -19,7 +18,6 @@ Shader "sTools/SnowMossShader"
 		_snowBumpMap("Snow Normal Map", 2D) = "bump" {}
 
 		//Other Texture
-		_otherColor("Color", Color) = (1,1,1,1)
 		_otherTex("Other Texture", 2D) = "white" {}
 		_otherGlossiness("Other Smoothness", Range(0,1)) = 0.5
 		_otherMetallic("Other Metallic", Range(0,1)) = 0.0
@@ -59,7 +57,6 @@ Shader "sTools/SnowMossShader"
 		float _SnowThreshold;
 
 		//Snow Texture
-		float4 _snowColor;
 		sampler2D _snowTex;
 		sampler2D _snowMet;
 		sampler2D _snowAO;
@@ -68,7 +65,6 @@ Shader "sTools/SnowMossShader"
 		half _snowMetallic;
 
 		//Other Texture
-		float4 _otherColor;
 		sampler2D _otherTex;
 		sampler2D _otherMet;
 		sampler2D _otherAO;
@@ -109,8 +105,8 @@ Shader "sTools/SnowMossShader"
 		{
 
 			//Albedo
-			fixed4 snowAlbedo = tex2D(_snowTex, IN.uv_snowTex) *_snowColor;
-			fixed4 otherAlbedo = tex2D(_otherTex, IN.uv_otherTex) *_otherColor;
+			fixed4 snowAlbedo = tex2D(_snowTex, IN.uv_snowTex);
+			fixed4 otherAlbedo = tex2D(_otherTex, IN.uv_otherTex);
 			fixed4 noiseTex = tex2D(_noiseTex, IN.uv_noiseTex);
 			o.Albedo = lerp(otherAlbedo, snowAlbedo, IN._SnowMask * noiseTex);
 
@@ -136,8 +132,6 @@ Shader "sTools/SnowMossShader"
 			fixed4 glitterScreen = tex2D(_glitterMap, ScreenUV);
 			fixed4 glitterWorld = tex2D(_glitterMap, IN.uv_snowTex);
 			o.Emission = glitterScreen * glitterWorld * IN._SnowMask;
-
-			o.Alpha = _snowColor.a;
 		}
 		ENDCG
 	}
