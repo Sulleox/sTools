@@ -25,7 +25,10 @@
 
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
-			o.Albedo = tex2D (_MainTex, IN.uv_MainTex);
+			float2 mirrorUV;
+			mirrorUV.x = 1 - IN.uv_MainTex.x;
+			mirrorUV.y = IN.uv_MainTex.y;
+			o.Albedo = tex2D (_MainTex, mirrorUV);
 			o.Alpha = 1.0f;
 		}
 		ENDCG
