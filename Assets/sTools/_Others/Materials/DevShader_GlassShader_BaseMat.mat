@@ -47,7 +47,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GlassDamageMap:
-        m_Texture: {fileID: 2800000, guid: 84527854eed5a6c49be926e3081631a0, type: 3}
+        m_Texture: {fileID: 2800000, guid: 05916cce83cfabc47842389154eaf479, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GlassMap:
@@ -75,7 +75,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RefractionBumpMap:
-        m_Texture: {fileID: 2800000, guid: c4b914a2b56173c4a9b90b625f3745ea, type: 3}
+        m_Texture: {fileID: 2800000, guid: 66c6ddce74de3024d8802f7c22049160, type: 3}
         m_Scale: {x: 10, y: 10}
         m_Offset: {x: 0, y: 0}
     - _RefractionMap:
@@ -85,7 +85,7 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _DamageTransparency: 0.082
+    - _DamageTransparency: 0.755
     - _DetailNormalMapScale: 1
     - _DirtTransparency: 0
     - _DstBlend: 0
@@ -97,7 +97,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _RefractionValue: 0.33
+    - _RefractionValue: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -106,7 +106,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DamageColor: {r: 0.8308824, g: 0.53152037, b: 0.53152037, a: 0.5}
+    - _DamageColor: {r: 0.034256063, g: 0.08823532, b: 0.012975784, a: 0.5}
     - _DirtColor: {r: 0, g: 0, b: 0, a: 0.5}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectColor: {r: 1, g: 1, b: 1, a: 1}
