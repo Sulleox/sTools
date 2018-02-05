@@ -3,9 +3,11 @@
 	Properties 
 	{
 		_Color ("Color", Color) = (1,1,1,1)
-		_MainTex ("Albedo (RGB)", 2D) = "white" {}
-		_Glossiness ("Smoothness", Range(0,1)) = 0.5
-		_Metallic ("Metallic", Range(0,1)) = 0.0
+		_WaterTexture ("Water Texture (RGB)", 2D) = "white" {}
+		_WaterNormal ("Water Normal Map", 2D) = "blue" {}
+
+		_ScrollXSpeed ("XSpeed", float) = 0.5
+		_ScrollYSpeed ("YSpeed", float) = 0.5
 	}
 	SubShader 
 	{
@@ -16,28 +18,35 @@
 		#pragma surface surf Standard fullforwardshadows
 		#pragma target 3.0
 
-		sampler2D _MainTex;
+		sampler2D _WaterTexture;
+		sampler2D _WaterNormal;
 
 		struct Input 
 		{
-			float2 uv_MainTex;
+			float2 uv_WaterTexture;
 		};
 
-		half _Glossiness;
-		half _Metallic;
 		fixed4 _Color;
 
+		fixed _ScrollXSpeed;
+		fixed _ScrollYSpeed;
 		
 		UNITY_INSTANCING_CBUFFER_START(Props)
 		UNITY_INSTANCING_CBUFFER_END
 
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
-			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+			fixed2 scrolledUV = IN.uv_WaterTexture;
+			fixed xScrollValue = _ScrollXSpeed * _Time;
+         	fixed yScrollValue = _ScrollYSpeed * _Time;
+			scrolledUV += fixed2(xScrollValue, yScrollValue);
+			
+			fixed4 c = tex2D (_WaterTexture, scrolledUV) * _Color;
+			fixed4 normal = tex2D (_WaterNormal, scrolledUV);
+			
 			o.Albedo = c.rgb;
-			o.Metallic = _Metallic;
-			o.Smoothness = _Glossiness;
 			o.Alpha = c.a;
+			o.Normal = normal;
 		}
 		ENDCG
 	}
