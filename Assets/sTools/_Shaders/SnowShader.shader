@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "sTools/SnowMossShader"
+Shader "sTools/SnowShader"
 {
 	Properties
 	{
@@ -17,13 +17,13 @@ Shader "sTools/SnowMossShader"
 		_snowAO("Snow AO Map", 2D) = "white" {}
 		_snowBumpMap("Snow Normal Map", 2D) = "bump" {}
 
-		//Other Texture
-		_otherTex("Other Texture", 2D) = "white" {}
-		_otherGlossiness("Other Smoothness", Range(0,1)) = 0.5
-		_otherMetallic("Other Metallic", Range(0,1)) = 0.0
-		_otherMet("Other Metallic Map", 2D) = "white" {}
-		_otherAO("Other AO Map", 2D) = "white" {}
-		_otherBumpMap("Other Normal Map", 2D) = "bump" {}
+		//Rock Texture
+		_otherTex("Rock Texture", 2D) = "white" {}
+		_otherGlossiness("Rock Smoothness", Range(0,1)) = 0.5
+		_otherMetallic("Rock Metallic", Range(0,1)) = 0.0
+		_otherMet("Rock Metallic Map", 2D) = "white" {}
+		_otherAO("Rock AO Map", 2D) = "white" {}
+		_otherBumpMap("Rock Normal Map", 2D) = "bump" {}
 
 		//Glitter Map
 		_glitterMap("Glitter Map", 2D) = "black" {}
