@@ -1,4 +1,6 @@
-﻿Shader "sTools/PulseShader" 
+﻿// Upgrade NOTE: upgraded instancing buffer 'Props' to new syntax.
+
+Shader "sTools/PulseShader" 
 {
 	Properties 
 	{
@@ -40,8 +42,8 @@
 
 		float _PulseSpeed;
 
-		UNITY_INSTANCING_CBUFFER_START(Props)
-		UNITY_INSTANCING_CBUFFER_END
+		UNITY_INSTANCING_BUFFER_START(Props)
+		UNITY_INSTANCING_BUFFER_END(Props)
 
 		void vert(inout appdata_full v)
 		{

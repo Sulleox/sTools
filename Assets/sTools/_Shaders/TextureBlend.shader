@@ -1,4 +1,6 @@
-﻿Shader "sTools/TextureBlend" 
+﻿// Upgrade NOTE: upgraded instancing buffer 'Props' to new syntax.
+
+Shader "sTools/TextureBlend" 
 {
 	Properties 
 	{
@@ -57,8 +59,8 @@
 
 		half _blendAmount;
 
-		UNITY_INSTANCING_CBUFFER_START(Props)
-		UNITY_INSTANCING_CBUFFER_END
+		UNITY_INSTANCING_BUFFER_START(Props)
+		UNITY_INSTANCING_BUFFER_END(Props)
 
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{

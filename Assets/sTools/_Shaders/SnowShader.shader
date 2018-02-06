@@ -1,4 +1,6 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+﻿// Upgrade NOTE: upgraded instancing buffer 'Props' to new syntax.
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 Shader "sTools/SnowShader"
 {
@@ -78,8 +80,8 @@ Shader "sTools/SnowShader"
 		sampler2D _noiseTex;
 		float _SnowMask;
 
-		UNITY_INSTANCING_CBUFFER_START(Props)
-		UNITY_INSTANCING_CBUFFER_END
+		UNITY_INSTANCING_BUFFER_START(Props)
+		UNITY_INSTANCING_BUFFER_END(Props)
 
 			void vert(inout appdata_full v, out Input o)
 		{

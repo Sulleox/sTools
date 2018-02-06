@@ -1,4 +1,6 @@
-﻿Shader "sTools/MirrorShader[Not Finished]" 
+﻿// Upgrade NOTE: upgraded instancing buffer 'Props' to new syntax.
+
+Shader "sTools/MirrorShader[Not Finished]" 
 {
 	Properties 
 	{
@@ -24,8 +26,8 @@
 			float2 uv_RenderTex;
 		};
 
-		UNITY_INSTANCING_CBUFFER_START(Props)
-		UNITY_INSTANCING_CBUFFER_END
+		UNITY_INSTANCING_BUFFER_START(Props)
+		UNITY_INSTANCING_BUFFER_END(Props)
 
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
