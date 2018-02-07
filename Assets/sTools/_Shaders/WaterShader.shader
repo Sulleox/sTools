@@ -26,14 +26,14 @@ Shader "sTools/WaterShader"
 		ZWrite off
 		
 		CGPROGRAM
-		#pragma surface surf Standard vertex:vert fullforwardshadows alpha
-		#pragma target 3.0
+		#pragma surface surf Standard fullforwardshadows vertex:vert alpha
+		#pragma target 4.6
 
 		sampler2D _WaterTexture;
 		sampler2D _WaterNormal;
 
 		sampler2D _WaveMask;
-
+		
 		uniform sampler2D _CameraDepthTexture;
 
 		struct Input 
@@ -47,7 +47,6 @@ Shader "sTools/WaterShader"
 			float4 pos : SV_POSITION;
 			float4 scrPos:TEXCOORD1;
 		};
-
 
 		//SCROLLING PARAMETERS
 		fixed _ScrollXSpeed;
@@ -97,16 +96,18 @@ Shader "sTools/WaterShader"
 
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
-			fixed4 c = tex2D (_WaterTexture, IN.scrolledUV) * _WaterColor;
+			//fixed4 c = tex2D (_WaterTexture, IN.scrolledUV) * _WaterColor;
+			fixed4 c = _WaterColor;
 			fixed4 normal = tex2D (_WaterNormal, IN.scrolledUV);
 
 			float depthValue = LinearEyeDepth (SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(IN.scrPos)));
 			float rim = saturate(1 - (depthValue - IN.scrPos.w) * (1 - _FoamSize) / 0.2);
 			
-			o.Albedo = (rim * _DepthColor) + (c.rgb * (1 - rim)) ;
+			//o.Albedo = (rim * _DepthColor) + (c.rgb * (1 - rim)) ;
 			o.Albedo = c.rgb;
+			o.Metallic = 1 - rim;
 			o.Normal = normal;
-			o.Alpha = 1- rim;
+			o.Alpha = 1 - rim;
 		}
 		ENDCG
 	}
