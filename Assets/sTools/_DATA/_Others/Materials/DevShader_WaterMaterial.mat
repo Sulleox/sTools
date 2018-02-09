@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: DevShader_WaterMaterial
-  m_Shader: {fileID: 4800000, guid: 87e4c55767448a8499222065d5eaccdb, type: 3}
+  m_Shader: {fileID: 4800000, guid: 7282419048c2f654c88c3fb9263daa8c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -55,7 +55,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WaterNormal:
-        m_Texture: {fileID: 2800000, guid: 2db12e522e8b2cd4e863ebbfab2a47c5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 66c6ddce74de3024d8802f7c22049160, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WaterTexture:
@@ -63,7 +63,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WaveMask:
-        m_Texture: {fileID: 2800000, guid: 7123469e3dc340543b1b1269736961ec, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9f99aa305d922f94e8e1dd570b874f77, type: 3}
         m_Scale: {x: 4, y: 4}
         m_Offset: {x: 0, y: 0}
     m_Floats:
