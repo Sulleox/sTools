@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: DevShader_SnowShader_TestMat
-  m_Shader: {fileID: 4800000, guid: c8de33aff616e604eb550bcf93cf03c2, type: 3}
+  m_Shader: {fileID: 4800000, guid: a84c438ad26b6534ea23fd51d8527074, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

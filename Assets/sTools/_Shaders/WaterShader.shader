@@ -13,8 +13,7 @@ Shader "sTools/WaterShader"
 		_WaterNormal ("Water Normal Map", 2D) = "blue" {}
 		_WaterHeight ("Wave Height Map", 2D) = "black" {}
 
-		_FoamSize ("Foam Size", Range(0, 0.9)) = 0.5
-		_FoamTexture ("Foam Texture", 2D) = "white" {}
+		_DepthSize ("Depth Size", Range(0, 0.9)) = 0.5
 	}
 	SubShader 
 	{
@@ -50,9 +49,8 @@ Shader "sTools/WaterShader"
 		fixed4 _WaterColor;
 		float _WaveHeight;
 		
-		//FOAM PARAMETERS
-		sampler2D _FoamTexture;
-		float _FoamSize;
+		//DEPTH PARAMETERS
+		float _DepthSize;
 
 		//TEMPORARY VALUE
 		float4 temp_scrolledUV;
@@ -90,14 +88,14 @@ Shader "sTools/WaterShader"
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
 			fixed4 c = _WaterColor;
-			fixed4 foamTex = tex2D(_FoamTexture, IN.scrolledUV);
 			fixed4 normal = tex2D(_WaterNormal, IN.scrolledUV);
 
 			float depthValue = LinearEyeDepth (SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(IN.scrPos)));
-			float rim = saturate(1 - (depthValue - IN.scrPos.w) * (1 - _FoamSize) / 0.2);
+			float rim = saturate(1 - (depthValue - IN.scrPos.w) * (1 - _DepthSize) / 0.2);
 			
-			//o.Albedo = c.rgb * (1-rim) + foamTex * rim;
+			//o.Albedo = c.rgb * (1-rim) + _DepthColor * rim;
 			o.Albedo = c.rgb * (1-rim);
+			o.Smoothness = 0.8;
 			o.Normal = normal;
 			o.Alpha = 1 - rim;
 			o.Metallic = 0;

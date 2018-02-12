@@ -139,7 +139,7 @@ Material:
     - _PulseAmount: 0.097
     - _PulseSpeed: 50
     - _SmoothnessTextureChannel: 0
-    - _SnowAmount: 0
+    - _SnowAmount: 0.445
     - _SnowThreshold: 1
     - _SpecularHighlights: 1
     - _SrcBlend: 1
