@@ -9,7 +9,7 @@ Shader "sTools/SnowShader"
 		//Shader Variables
 		_SnowVector("SnowVector", vector) = (0,1,0,0)
 		_SnowThreshold("Threshold", Range(0,1)) = 0.0
-		_SnowAmount("Amount", Range(0,0.2)) = 0.0
+		_SnowAmount("Amount", Range(0,0.5)) = 0.0
 
 		//Snow Texture
 		_snowTex("Snow Texture", 2D) = "white" {}

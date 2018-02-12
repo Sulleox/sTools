@@ -74,7 +74,7 @@ Shader "sTools/WaterShader"
 			temp_scrolledUV += fixed4(temp_xScrollValue, temp_yScrollValue, 1, 1);
 
 			float4 HeightMask = tex2Dlod(_WaterHeight, temp_scrolledUV);
-			v.vertex.y += _WaveHeight * HeightMask;
+			v.vertex.y -= _WaveHeight * HeightMask;
 
 			//SAVE SCROLLED UV PARAMETERS
 			o.scrolledUV = temp_scrolledUV;
@@ -98,9 +98,9 @@ Shader "sTools/WaterShader"
 			
 			//o.Albedo = c.rgb * (1-rim) + foamTex * rim;
 			o.Albedo = c.rgb * (1-rim);
-			o.Metallic = saturate(1 - rim);
 			o.Normal = normal;
 			o.Alpha = 1 - rim;
+			o.Metallic = 0;
 		}
 		ENDCG
 	}
