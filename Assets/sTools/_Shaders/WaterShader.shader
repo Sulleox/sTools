@@ -9,15 +9,12 @@ Shader "sTools/WaterShader"
 		_ScrollYSpeed ("YSpeed", float) = 0.5
 
 		_WaterColor ("Water Color", Color) = (1,1,1,1)
-		_WaterTexture ("Water Texture (RGB)", 2D) = "white" {}
+		_WaveHeight("Wave Height", Range(0, 0.9)) = 0.5
 		_WaterNormal ("Water Normal Map", 2D) = "blue" {}
-
-		_WaveMask ("Wave Mask", 2D) = "black" {}
-		_WaveHeight("Wave Height", float) = 0.5
-		_WaveAmount ("Wave Amount", float) = 0.5
-
+		_WaterHeight ("Wave Height Map", 2D) = "black" {}
 
 		_FoamSize ("Foam Size", Range(0, 0.9)) = 0.5
+		_FoamTexture ("Foam Texture", 2D) = "white" {}
 	}
 	SubShader 
 	{
@@ -29,17 +26,8 @@ Shader "sTools/WaterShader"
 		#pragma surface surf Standard fullforwardshadows vertex:vert alpha
 		#pragma target 4.6
 
-		sampler2D _WaterTexture;
-		sampler2D _WaterNormal;
-
-		sampler2D _WaveMask;
-		
-		uniform sampler2D _CameraDepthTexture;
-
 		struct Input 
 		{
-			float2 uv_WaterTexture;
-
 			fixed2 scrolledUV;
 			fixed xScrollValue;
          	fixed yScrollValue;
@@ -48,17 +36,22 @@ Shader "sTools/WaterShader"
 			float4 scrPos:TEXCOORD1;
 		};
 
+		//ZDEPTH TEST PARAMETERS
+		uniform sampler2D _CameraDepthTexture;
+
 		//SCROLLING PARAMETERS
 		fixed _ScrollXSpeed;
 		fixed _ScrollYSpeed;
 
 		//WATER PARAMETERS
+		sampler2D _WaterNormal;
+		sampler2D _WaterHeight;
 		fixed4 _DepthColor;
 		fixed4 _WaterColor;
 		float _WaveHeight;
-		float _WaveAmount;
 		
 		//FOAM PARAMETERS
+		sampler2D _FoamTexture;
 		float _FoamSize;
 
 		//TEMPORARY VALUE
@@ -71,7 +64,7 @@ Shader "sTools/WaterShader"
 
 		void vert(inout appdata_full v, out Input o)
 		{
-			//Enable input save in Vertex Edit.
+			//ENABLE INPUT SAVE IN VERTEX
 			UNITY_INITIALIZE_OUTPUT(Input, o);
 
 			//SCROLLING OF NORMAL MAP & HEIGHT MAP
@@ -80,10 +73,10 @@ Shader "sTools/WaterShader"
          	temp_yScrollValue = _ScrollYSpeed * _Time;
 			temp_scrolledUV += fixed4(temp_xScrollValue, temp_yScrollValue, 1, 1);
 
-			float4 Mask = tex2Dlod(_WaveMask, temp_scrolledUV);
-			v.vertex.y += _WaveHeight * Mask;
+			float4 HeightMask = tex2Dlod(_WaterHeight, temp_scrolledUV);
+			v.vertex.y += _WaveHeight * HeightMask;
 
-			//Save ScrolledUV Parameters
+			//SAVE SCROLLED UV PARAMETERS
 			o.scrolledUV = temp_scrolledUV;
 			o.xScrollValue = temp_xScrollValue;
 			o.yScrollValue = temp_yScrollValue;
@@ -96,16 +89,16 @@ Shader "sTools/WaterShader"
 
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
-			//fixed4 c = tex2D (_WaterTexture, IN.scrolledUV) * _WaterColor;
 			fixed4 c = _WaterColor;
-			fixed4 normal = tex2D (_WaterNormal, IN.scrolledUV);
+			fixed4 foamTex = tex2D(_FoamTexture, IN.scrolledUV);
+			fixed4 normal = tex2D(_WaterNormal, IN.scrolledUV);
 
 			float depthValue = LinearEyeDepth (SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(IN.scrPos)));
 			float rim = saturate(1 - (depthValue - IN.scrPos.w) * (1 - _FoamSize) / 0.2);
 			
-			//o.Albedo = (rim * _DepthColor) + (c.rgb * (1 - rim)) ;
-			o.Albedo = c.rgb;
-			o.Metallic = 1 - rim;
+			//o.Albedo = c.rgb * (1-rim) + foamTex * rim;
+			o.Albedo = c.rgb * (1-rim);
+			o.Metallic = saturate(1 - rim);
 			o.Normal = normal;
 			o.Alpha = 1 - rim;
 		}
