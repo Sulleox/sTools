@@ -1,6 +1,4 @@
-﻿// Upgrade NOTE: upgraded instancing buffer 'Props' to new syntax.
-
-Shader "sTools/WaterShader" 
+﻿Shader "sTools/WaterShader" 
 {
 	Properties 
 	{
@@ -18,7 +16,7 @@ Shader "sTools/WaterShader"
 	{
 		LOD 200
 		Tags { "RenderType"="Opaque" "Queue"="Transparent" }
-		ZWrite off
+		ZWrite on
 		
 		CGPROGRAM
 		#pragma surface surf Standard fullforwardshadows vertex:vert alpha
