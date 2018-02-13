@@ -4,7 +4,6 @@ Shader "sTools/WaterShader"
 {
 	Properties 
 	{
-		_DepthColor ("Depth Color", Color) = (1,1,1,1)
 		_ScrollXSpeed ("XSpeed", float) = 0.5
 		_ScrollYSpeed ("YSpeed", float) = 0.5
 
@@ -45,7 +44,6 @@ Shader "sTools/WaterShader"
 		//WATER PARAMETERS
 		sampler2D _WaterNormal;
 		sampler2D _WaterHeight;
-		fixed4 _DepthColor;
 		fixed4 _WaterColor;
 		float _WaveHeight;
 		
@@ -56,6 +54,9 @@ Shader "sTools/WaterShader"
 		float4 temp_scrolledUV;
 		float temp_xScrollValue;
 		float temp_yScrollValue;
+
+		//SCALE TRANSFORM PARAMETERS
+		float4 _WaterNormal_ST;
 		
 		UNITY_INSTANCING_BUFFER_START(Props)
 		UNITY_INSTANCING_BUFFER_END(Props)
@@ -66,7 +67,7 @@ Shader "sTools/WaterShader"
 			UNITY_INITIALIZE_OUTPUT(Input, o);
 
 			//SCROLLING OF NORMAL MAP & HEIGHT MAP
-			temp_scrolledUV = fixed4 (v.texcoord.xy, 0, 0);
+			temp_scrolledUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _WaterNormal), 0, 0);
 			temp_xScrollValue = _ScrollXSpeed * _Time;
          	temp_yScrollValue = _ScrollYSpeed * _Time;
 			temp_scrolledUV += fixed4(temp_xScrollValue, temp_yScrollValue, 1, 1);
@@ -93,7 +94,6 @@ Shader "sTools/WaterShader"
 			float depthValue = LinearEyeDepth (SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(IN.scrPos)));
 			float rim = saturate(1 - (depthValue - IN.scrPos.w) * (1 - _DepthSize) / 0.2);
 			
-			//o.Albedo = c.rgb * (1-rim) + _DepthColor * rim;
 			o.Albedo = c.rgb * (1-rim);
 			o.Smoothness = 0.8;
 			o.Normal = normal;
