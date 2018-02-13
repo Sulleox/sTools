@@ -15,16 +15,19 @@
 		ZWrite on
 
 		CGPROGRAM
-		#pragma surface surf Standard fullforwardshadows Lambert alpha
+		#pragma surface surf Standard fullforwardshadows alpha:fade 
 		#pragma target 3.0
 
 		struct Input 
 		{
 			float2 uv_FoamTexture;
+			float2 uv_FoamMask;
 		};
 
 		sampler2D _FoamTexture;
 		sampler2D _FoamMask;
+
+		//SCROLL UV
 		fixed _ScrollXSpeed;
 		fixed _ScrollYSpeed;
 		float2 temp_scrolledUV;
@@ -38,11 +41,11 @@
          	float temp_yScrollValue = _ScrollYSpeed * _Time;
 			temp_scrolledUV += fixed4(temp_xScrollValue, temp_yScrollValue, 1, 1);
 			
-			float4 foamTex = tex2D(_FoamTexture, IN.uv_FoamTexture);
-			float4 foamMask = tex2D(_FoamMask, IN.uv_FoamTexture);
+			float4 foamTex = tex2D(_FoamTexture, IN.uv_FoamTexture + temp_scrolledUV);
+			float4 foamMask = tex2D(_FoamMask, IN.uv_FoamMask);
 
 			o.Albedo = foamTex;
-			o.Alpha = foamMask;
+			o.Alpha = foamMask * foamTex * 0.5;
 		}
 		ENDCG
 	}
