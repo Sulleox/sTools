@@ -2,6 +2,8 @@
 {
 	Properties 
 	{
+		_FoamAlpha ("Foam Transparence", Range(0, 1)) = 0.5
+
 		_FoamTexture ("Foam Texture", 2D) = "black" {}
 		_FoamMask ("Foam Mask", 2D) = "white" {}
 
@@ -32,6 +34,8 @@
 		fixed _ScrollYSpeed;
 		float2 temp_scrolledUV;
 
+		fixed _FoamAlpha;
+
 		UNITY_INSTANCING_BUFFER_START(Props)
 		UNITY_INSTANCING_BUFFER_END(Props)
 
@@ -45,7 +49,7 @@
 			float4 foamMask = tex2D(_FoamMask, IN.uv_FoamMask);
 
 			o.Albedo = foamTex;
-			o.Alpha = foamMask * foamTex * 0.5;
+			o.Alpha = foamMask * foamTex * 0.5 * _FoamAlpha;
 		}
 		ENDCG
 	}

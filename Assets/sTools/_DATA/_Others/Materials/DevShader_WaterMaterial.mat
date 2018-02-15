@@ -77,7 +77,7 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _DepthSize: 0.71
+    - _DepthSize: 0.829
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _FoamSize: 0.851
@@ -96,7 +96,7 @@ Material:
     - _Tess: 2
     - _UVSec: 0
     - _WaveAmount: 0
-    - _WaveHeight: 0.3
+    - _WaveHeight: 0.19
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 0.15441176, g: 0.23022315, b: 0.25, a: 1}
