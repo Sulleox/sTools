@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-public class SnowMossShaderEditor : ShaderGUI
+public class SnowShaderEditor : ShaderGUI
 {
     //Properties
     MaterialProperty snowVector = null;
@@ -36,24 +36,25 @@ public class SnowMossShaderEditor : ShaderGUI
         m_MaterialEditor = materialEditor;
 
         //Base Properties
-        m_MaterialEditor.ShaderProperty(snowVector, "Snow/Moss Vector");
-        m_MaterialEditor.ShaderProperty(snowThreshold, "Snow/Moss Threshold");
-        m_MaterialEditor.ShaderProperty(snowAmout, "Snow/Moss Amount");
+        m_MaterialEditor.ShaderProperty(snowVector, "Snow Vector");
+        m_MaterialEditor.ShaderProperty(snowThreshold, "Snow Threshold");
+        m_MaterialEditor.ShaderProperty(snowAmout, "Snow Amount");
 
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
-        showSnowProperties = EditorGUILayout.Foldout(showSnowProperties, "Show Snow/Grass Texture Properties");
-        //Snow Snow/Moss Properties
+        showSnowProperties = EditorGUILayout.Foldout(showSnowProperties, "Show Snow Texture Properties");
+        //Snow Snow Properties
         if (showSnowProperties)
         {
-            m_MaterialEditor.ShaderProperty(snowTexture, "Snow/Moss Texture");
-            m_MaterialEditor.ShaderProperty(snowMetallic, "Snow/Moss Metallic Map");
-            m_MaterialEditor.ShaderProperty(snowMetRange, "Snow/Moss Metallic Range");
-            m_MaterialEditor.ShaderProperty(snowGlosRange, "Snow/Moss Glossiness Range");
+            m_MaterialEditor.ShaderProperty(snowTexture, "Snow Texture");
+            m_MaterialEditor.ShaderProperty(snowMetallic, "Snow Metallic Map");
+            m_MaterialEditor.ShaderProperty(snowMetRange, "Snow Metallic Range");
+            m_MaterialEditor.ShaderProperty(snowGlosRange, "Snow Glossiness Range");
             m_MaterialEditor.ShaderProperty(snowAO, "Snow AO Map");
-            m_MaterialEditor.ShaderProperty(snowBumpMap, "Snow/Moss Normal Map");
+            m_MaterialEditor.ShaderProperty(snowBumpMap, "Snow Normal Map");
         }
 
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
         showBaseProperties = EditorGUILayout.Foldout(showBaseProperties, "Show Base Texture Properties");
         //Snow Base Properties

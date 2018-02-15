@@ -138,5 +138,5 @@ Shader "sTools/SnowShader"
 		ENDCG
 	}
 		FallBack "Diffuse"
-		CustomEditor "SnowMossShaderEditor"
+		CustomEditor "SnowShaderEditor"
 }

@@ -1,4 +1,4 @@
-﻿Shader "sTools/VertexColorShader" 
+﻿Shader "sTools/ShowVertexColorShader" 
 {
 	Properties 
 	{
