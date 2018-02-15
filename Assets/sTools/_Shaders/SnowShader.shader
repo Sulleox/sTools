@@ -1,8 +1,4 @@
-﻿// Upgrade NOTE: upgraded instancing buffer 'Props' to new syntax.
-
-// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
-Shader "sTools/SnowShader"
+﻿Shader "sTools/SnowShader"
 {
 	Properties
 	{
