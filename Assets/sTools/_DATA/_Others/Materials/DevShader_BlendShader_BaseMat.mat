@@ -51,7 +51,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FirstTexture:
-        m_Texture: {fileID: 2800000, guid: 81dec9b1d017b414cb17eb8415cfeb58, type: 3}
+        m_Texture: {fileID: 2800000, guid: 4832c24e9117950418f46e4ab669bfc4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -75,11 +75,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SecondBumpMap:
-        m_Texture: {fileID: 2800000, guid: ba543556c5b322f40970ae5d1cd00887, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SecondMetallicMap:
-        m_Texture: {fileID: 2800000, guid: 3ec10a562912ea04caa6d7109d559ed3, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SecondTex:
@@ -87,11 +87,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SecondTexture:
-        m_Texture: {fileID: 2800000, guid: 840a6db4205859a419a2244db7459ef5, type: 3}
+        m_Texture: {fileID: 2800000, guid: fe1c0c6d1a3fa3247857f7f8395c9533, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _blendMask:
-        m_Texture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
+        m_Texture: {fileID: 2800000, guid: 1bf138a6ce2482049a261f7a6dfc0ec4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -115,7 +115,7 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _blendAmount: 1
+    - _blendAmount: 0
     m_Colors:
     - _Color: {r: 0.64705884, g: 0.64705884, b: 0.64705884, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
