@@ -10,9 +10,36 @@
 	SubShader 
 	{
 		Tags { "RenderMode" = "Opaque" }
-		Cull Front
 
+		//RENDER OBJECT
+		Cull Back
+		CGPROGRAM
+		#pragma surface surf Standard fullforwardshadows
+		#pragma target 3.0
+
+		struct Input 
+		{
+			float2 uv_MainTex;
+		};
+
+		sampler2D _MainTex;
+		uniform float _OutlineWidth;
+		uniform float4 _OutlineColor;
+
+		UNITY_INSTANCING_BUFFER_START(Props)
+		UNITY_INSTANCING_BUFFER_END(Props)
+
+		void surf (Input IN, inout SurfaceOutputStandard o) 
+		{
+			fixed4 c = tex2D (_MainTex, IN.uv_MainTex);
+			o.Albedo = c.rgb;
+			o.Alpha = c.a;
+		}
+		ENDCG
+
+		Tags { "Queue" = "Transparent" "RenderMode" = "Opaque" }
 		//PASS DRAWING OUTLINE
+		Cull Front
 		CGPROGRAM
 
 		#pragma surface surf Standard vertex:vert addshadow
@@ -38,32 +65,6 @@
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
 			o.Albedo = _OutlineColor;
-		}
-		ENDCG
-
-		Cull Back
-		//RENDER OBJECT
-		CGPROGRAM
-		#pragma surface surf Standard fullforwardshadows
-		#pragma target 3.0
-
-		struct Input 
-		{
-			float2 uv_MainTex;
-		};
-
-		sampler2D _MainTex;
-		uniform float _OutlineWidth;
-		uniform float4 _OutlineColor;
-
-		UNITY_INSTANCING_BUFFER_START(Props)
-		UNITY_INSTANCING_BUFFER_END(Props)
-
-		void surf (Input IN, inout SurfaceOutputStandard o) 
-		{
-			fixed4 c = tex2D (_MainTex, IN.uv_MainTex);
-			o.Albedo = c.rgb;
-			o.Alpha = c.a;
 		}
 		ENDCG
 	}
