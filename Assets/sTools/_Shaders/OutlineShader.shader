@@ -9,9 +9,8 @@
 
 	SubShader 
 	{
-		Tags { "RenderMode" = "Opaque" }
-
 		//RENDER OBJECT
+		Tags { "RenderMode" = "Opaque" }
 		Cull Back
 		CGPROGRAM
 		#pragma surface surf Standard fullforwardshadows
@@ -37,12 +36,12 @@
 		}
 		ENDCG
 
-		Tags { "Queue" = "Transparent" "RenderMode" = "Opaque" }
 		//PASS DRAWING OUTLINE
+		Tags { "Queue" = "Transparent" "RenderMode" = "Opaque" }
 		Cull Front
 		CGPROGRAM
 
-		#pragma surface surf Standard vertex:vert addshadow
+		#pragma surface surf Standard vertex:vert fullforwardshadows
 		#pragma target 3.0
 
 		struct Input 
@@ -51,14 +50,13 @@
 		};
 
 		uniform float _OutlineWidth;
-		uniform float _OutlineColor;
+		uniform float4 _OutlineColor;
 
 		UNITY_INSTANCING_BUFFER_START(Props)
 		UNITY_INSTANCING_BUFFER_END(Props)
 
 		void vert(inout appdata_full v)
 		{
-			//Able to keep the tiling and offset. 
 			v.vertex.xyz += v.normal * _OutlineWidth;
 		}
 
