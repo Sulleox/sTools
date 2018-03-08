@@ -64,6 +64,7 @@ ModelImporter:
     2300030: Rock_C_03
     2300032: Rock_C_04
     2300034: Rock_C_05
+    2300036: //RootNode
     3300000: River_Bed
     3300002: River_Foam_Left
     3300004: River_Foam_Middle
@@ -82,6 +83,7 @@ ModelImporter:
     3300030: Rock_C_03
     3300032: Rock_C_04
     3300034: Rock_C_05
+    3300036: //RootNode
     4300000: River_Bed
     4300002: Rock_A_01
     4300004: Rock_B_01
@@ -130,7 +132,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 3
     meshCompression: 0
     addColliders: 0
     importVisibility: 1

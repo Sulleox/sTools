@@ -39,12 +39,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FoamMask:
-        m_Texture: {fileID: 2800000, guid: 4107c2d0b506c864399e88698cc9d98f, type: 3}
+        m_Texture: {fileID: 2800000, guid: cb4d4a265a7e0c540bc04c378b6e312b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FoamTexture:
         m_Texture: {fileID: 2800000, guid: b01891703c005e64fbec4ceaab48e179, type: 3}
-        m_Scale: {x: 5, y: 5}
+        m_Scale: {x: 20, y: 20}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
@@ -67,7 +67,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _FoamAlpha: 0.58
+    - _FoamAlpha: 0.52
     - _FoamSize: 0.9
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -76,8 +76,8 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ScrollXSpeed: 2
-    - _ScrollYSpeed: 0
+    - _ScrollXSpeed: 0
+    - _ScrollYSpeed: -1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
