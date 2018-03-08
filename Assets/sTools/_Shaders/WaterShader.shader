@@ -2,14 +2,23 @@
 {
 	Properties 
 	{
-		_ScrollXSpeed ("XSpeed", float) = 0.5
-		_ScrollYSpeed ("YSpeed", float) = 0.5
+		_RScrollXSpeed ("R - XSpeed", float) = 0.5
+		_RScrollYSpeed ("R - YSpeed", float) = 0.5
+		_RWaterNormal ("R - Normal", 2D) = "blue" {}
+		_RWaterHeight ("R - Height", 2D) = "black" {}
+
+		_GScrollXSpeed ("G - XSpeed", float) = 0.5
+		_GScrollYSpeed ("G - YSpeed", float) = 0.5
+		_GWaterNormal ("G - Normal", 2D) = "blue" {}
+		_GWaterHeight ("G - Height", 2D) = "black" {}
+
+		_BScrollXSpeed ("B - XSpeed", float) = 0.5
+		_BScrollYSpeed ("B - YSpeed", float) = 0.5
+		_BWaterNormal ("B - Normal", 2D) = "blue" {}
+		_BWaterHeight ("B - Height", 2D) = "black" {}
 
 		_WaterColor ("Water Color", Color) = (1,1,1,1)
 		_WaveHeight("Wave Height", Range(0, 0.9)) = 0.5
-		_WaterNormal ("Water Normal Map", 2D) = "blue" {}
-		_WaterHeight ("Wave Height Map", 2D) = "black" {}
-
 		_DepthSize ("Depth Size", Range(0, 0.9)) = 0.5
 	}
 	SubShader 
@@ -24,37 +33,52 @@
 
 		struct Input 
 		{
-			fixed2 scrolledUV;
-			fixed xScrollValue;
-         	fixed yScrollValue;
+			fixed2 RScrollUV;
+			fixed RScrollX;
+         	fixed RScrollY;
+
+			fixed2 GScrollUV;
+			fixed GScrollX;
+         	fixed GScrollY;
+
+			fixed2 BScrollUV;
+			fixed BScrollX;
+         	fixed BScrollY;
 
 			float4 pos : SV_POSITION;
 			float4 scrPos:TEXCOORD1;
+
+			fixed4 color : COLOR;
 		};
 
 		//ZDEPTH TEST PARAMETERS
 		uniform sampler2D _CameraDepthTexture;
-
-		//SCROLLING PARAMETERS
-		fixed _ScrollXSpeed;
-		fixed _ScrollYSpeed;
-
-		//WATER PARAMETERS
-		sampler2D _WaterNormal;
-		sampler2D _WaterHeight;
-		fixed4 _WaterColor;
-		float _WaveHeight;
-		
 		//DEPTH PARAMETERS
 		float _DepthSize;
 
-		//TEMPORARY VALUE
-		float4 temp_scrolledUV;
-		float temp_xScrollValue;
-		float temp_yScrollValue;
+		//SCROLLING PARAMETERS
+		fixed _RScrollXSpeed, _RScrollYSpeed;
+		fixed _GScrollXSpeed, _GScrollYSpeed;
+		fixed _BScrollXSpeed, _BScrollYSpeed;
+
+		//WATER PARAMETERS
+		sampler2D _RWaterNormal, _RWaterHeight;
+		sampler2D _GWaterNormal, _GWaterHeight;
+		sampler2D _BWaterNormal, _BWaterHeight;
 
 		//SCALE TRANSFORM PARAMETERS
-		float4 _WaterNormal_ST;
+		float4 _RWaterNormal_ST;
+		float4 _GWaterNormal_ST;
+		float4 _BWaterNormal_ST;
+
+		//BASE WATER PARAMETERS
+		fixed4 _WaterColor;
+		float _WaveHeight;
+		
+		//TEMPORARY VALUE
+		float4 temp_RScrollUV, temp_GScrollUV, temp_BScrollUV;
+		float temp_RScrollX, temp_GScrollX, temp_BScrollX;
+		float temp_RScrollY, temp_GScrollY, temp_BScrollY;
 		
 		UNITY_INSTANCING_BUFFER_START(Props)
 		UNITY_INSTANCING_BUFFER_END(Props)
@@ -64,19 +88,47 @@
 			//ENABLE INPUT SAVE IN VERTEX
 			UNITY_INITIALIZE_OUTPUT(Input, o);
 
-			//SCROLLING OF NORMAL MAP & HEIGHT MAP
-			temp_scrolledUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _WaterNormal), 0, 0);
-			temp_xScrollValue = _ScrollXSpeed * _Time;
-         	temp_yScrollValue = _ScrollYSpeed * _Time;
-			temp_scrolledUV += fixed4(temp_xScrollValue, temp_yScrollValue, 1, 1);
 
-			float4 HeightMask = tex2Dlod(_WaterHeight, temp_scrolledUV);
+			//GENERATING SCROLLING UV
+			temp_RScrollUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _RWaterNormal), 0, 0);
+			temp_RScrollX = _RScrollXSpeed * _Time;
+         	temp_RScrollY = _RScrollYSpeed * _Time;
+			temp_RScrollUV += fixed4(temp_RScrollX, temp_RScrollY, 1, 1);
+
+			temp_GScrollUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _GWaterNormal), 0, 0);
+			temp_GScrollX = _GScrollXSpeed * _Time;
+         	temp_GScrollY = _GScrollYSpeed * _Time;
+			temp_GScrollUV += fixed4(temp_GScrollX, temp_GScrollY, 1, 1);
+
+			temp_BScrollUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _BWaterNormal), 0, 0);
+			temp_BScrollX = _BScrollXSpeed * _Time;
+         	temp_BScrollY = _BScrollYSpeed * _Time;
+			temp_BScrollUV += fixed4(temp_BScrollX, temp_BScrollY, 1, 1);
+
+			//HEIGHT BLEND
+			fixed4 RWaterHeight = tex2Dlod(_RWaterHeight, temp_RScrollUV);
+			fixed4 GWaterHeight = tex2Dlod(_GWaterHeight, temp_GScrollUV);
+			fixed4 BWaterHeight = tex2Dlod(_BWaterHeight, temp_BScrollUV);
+
+			fixed4 RGLerp = lerp(RWaterHeight, GWaterHeight, v.color.g);
+			fixed4 RGBLerp = lerp(RGLerp, BWaterHeight, v.color.b);
+			fixed4 RGBGLerp = lerp(RGBLerp, RWaterHeight, v.color.r);
+
+			float4 HeightMask = RGBGLerp;
 			v.vertex.y -= _WaveHeight * HeightMask;
 
 			//SAVE SCROLLED UV PARAMETERS
-			o.scrolledUV = temp_scrolledUV;
-			o.xScrollValue = temp_xScrollValue;
-			o.yScrollValue = temp_yScrollValue;
+			o.RScrollUV = temp_RScrollUV;
+			o.RScrollX = temp_RScrollX;
+			o.RScrollY = temp_RScrollY;
+
+			o.GScrollUV = temp_GScrollUV;
+			o.GScrollX = temp_GScrollX;
+			o.GScrollY = temp_GScrollY;
+
+			o.BScrollUV = temp_BScrollUV;
+			o.BScrollX = temp_BScrollX;
+			o.BScrollY = temp_BScrollY;
 
 			//SAVING ZDEPTH PARAMETERS
 			o.pos = UnityObjectToClipPos (v.vertex);
@@ -86,8 +138,17 @@
 
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
+			//VERTEX COLOR BLEND
+			fixed4 RWater = tex2D(_RWaterNormal, IN.RScrollUV);
+			fixed4 GWater = tex2D(_GWaterNormal, IN.GScrollUV);
+			fixed4 BWater = tex2D(_BWaterNormal, IN.BScrollUV);
+
+			fixed4 RGLerp = lerp(RWater, GWater, IN.color.g);
+			fixed4 RGBLerp = lerp(RGLerp, BWater, IN.color.b);
+			fixed4 RGBGLerp = lerp(RGBLerp, RWater, IN.color.r);
+
 			fixed4 c = _WaterColor;
-			fixed4 normal = tex2D(_WaterNormal, IN.scrolledUV);
+			fixed4 normal = RGBGLerp;
 
 			float depthValue = LinearEyeDepth (SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(IN.scrPos)));
 			float rim = saturate(1 - (depthValue - IN.scrPos.w) * (1 - _DepthSize) / 0.2);
@@ -101,4 +162,5 @@
 		ENDCG
 	}
 	FallBack "Diffuse"
+	CustomEditor "WaterShaderEditor"
 }

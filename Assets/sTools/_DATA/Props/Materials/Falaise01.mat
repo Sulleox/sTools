@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: DevShader_WaterMaterial
-  m_Shader: {fileID: 4800000, guid: 7282419048c2f654c88c3fb9263daa8c, type: 3}
+  m_Name: Falaise01
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -38,12 +38,8 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _FoamTexture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 2fe179ad25cdfcb4bb2fb0b5336cf5bf, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -58,48 +54,23 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _WaterHeight:
-        m_Texture: {fileID: 2800000, guid: 9f99aa305d922f94e8e1dd570b874f77, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _WaterNormal:
-        m_Texture: {fileID: 2800000, guid: 66c6ddce74de3024d8802f7c22049160, type: 3}
-        m_Scale: {x: 2, y: 2}
-        m_Offset: {x: 0, y: 0}
-    - _WaterTexture:
-        m_Texture: {fileID: 2800000, guid: 66c6ddce74de3024d8802f7c22049160, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _WaveMask:
-        m_Texture: {fileID: 2800000, guid: 9f99aa305d922f94e8e1dd570b874f77, type: 3}
-        m_Scale: {x: 4, y: 4}
-        m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _DepthSize: 0.829
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _FoamSize: 0.851
     - _GlossMapScale: 1
-    - _Glossiness: 0.5
+    - _Glossiness: 0
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ScrollXSpeed: 2
-    - _ScrollYSpeed: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Tess: 2
     - _UVSec: 0
-    - _WaveAmount: 0
-    - _WaveHeight: 0.19
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.15441176, g: 0.23022315, b: 0.25, a: 1}
-    - _DepthColor: {r: 0.31617647, g: 0.31617647, b: 0.31617647, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _WaterColor: {r: 0.028492644, g: 0.061105486, b: 0.125, a: 1}
+    - _Color: {r: 0.55, g: 0.55, b: 0.55, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
