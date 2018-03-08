@@ -2,6 +2,8 @@
 {
 	Properties 
 	{
+		_FoamColor ("Foam Color", Color) = (1,1,1,1)
+
 		_FoamAlpha ("Foam Transparence", Range(0, 1)) = 0.5
 		_FoamMask ("Foam Mask", 2D) = "white" {}
 		_FoamTexture ("Foam Texture", 2D) = "black" {}
@@ -29,6 +31,7 @@
 		sampler2D _FoamTexture;
 		sampler2D _FoamMask;
 		fixed _FoamAlpha;
+		float4 _FoamColor;
 
 		//SCROLL UV
 		fixed _ScrollXSpeed;
@@ -47,7 +50,7 @@
 			float4 foamTex = tex2D(_FoamTexture, IN.uv_FoamTexture + temp_scrolledUV);
 			float4 foamMask = tex2D(_FoamMask, IN.uv_FoamMask);
 
-			o.Albedo = foamTex;
+			o.Albedo = foamTex * _FoamColor;
 			o.Alpha = _FoamAlpha  * foamMask;
 		}
 		ENDCG
