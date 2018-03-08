@@ -23,8 +23,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BWaterNormal:
-        m_Texture: {fileID: 2800000, guid: 81dec9b1d017b414cb17eb8415cfeb58, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 66c6ddce74de3024d8802f7c22049160, type: 3}
+        m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
@@ -67,8 +67,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GWaterNormal:
-        m_Texture: {fileID: 2800000, guid: 81dec9b1d017b414cb17eb8415cfeb58, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 66c6ddce74de3024d8802f7c22049160, type: 3}
+        m_Scale: {x: 1.5, y: 1.5}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 2fe179ad25cdfcb4bb2fb0b5336cf5bf, type: 3}
@@ -119,8 +119,8 @@ Material:
         m_Scale: {x: 4, y: 4}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _BScrollXSpeed: 3
-    - _BScrollYSpeed: 3
+    - _BScrollXSpeed: 2
+    - _BScrollYSpeed: 0
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DepthSize: 0.8
@@ -128,7 +128,7 @@ Material:
     - _DstBlend: 0
     - _FoamSize: 0.851
     - _GScrollXSpeed: 0
-    - _GScrollYSpeed: 6
+    - _GScrollYSpeed: 2
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -136,7 +136,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _RScrollXSpeed: 1
+    - _RScrollXSpeed: 0.5
     - _RScrollYSpeed: 0.5
     - _ScrollXSpeed: 2
     - _ScrollYSpeed: 0
@@ -146,10 +146,10 @@ Material:
     - _Tess: 2
     - _UVSec: 0
     - _WaveAmount: 0
-    - _WaveHeight: 0.9
+    - _WaveHeight: 0.342
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 0.15441176, g: 0.23022315, b: 0.25, a: 1}
     - _DepthColor: {r: 0.31617647, g: 0.31617647, b: 0.31617647, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _WaterColor: {r: 0.028492644, g: 0.08506592, b: 0.125, a: 1}
+    - _WaterColor: {r: 0.03762976, g: 0.14057095, b: 0.21323532, a: 1}

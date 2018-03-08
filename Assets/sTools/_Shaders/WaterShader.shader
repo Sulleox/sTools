@@ -53,7 +53,6 @@
 
 		//ZDEPTH TEST PARAMETERS
 		uniform sampler2D _CameraDepthTexture;
-		//DEPTH PARAMETERS
 		float _DepthSize;
 
 		//SCROLLING PARAMETERS
@@ -92,7 +91,7 @@
 			//GENERATING SCROLLING UV
 			temp_RScrollUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _RWaterNormal), 0, 0);
 			temp_RScrollX = _RScrollXSpeed * _Time;
-         	temp_RScrollY = _RScrollYSpeed * _Time;
+         	temp_RScrollY = _RScrollYSpeed *  _Time;
 			temp_RScrollUV += fixed4(temp_RScrollX, temp_RScrollY, 1, 1);
 
 			temp_GScrollUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _GWaterNormal), 0, 0);
