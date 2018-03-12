@@ -4,6 +4,7 @@
 	{
 		_RenderTex ("Render Texture", 2D) = "white" {}
 		_UVDeformMap ("UV Deform Map", 2D) = "yellow" {}
+		_UVDeformation ("UV Deformation", Range(0,1)) = 0.5
 		_VisorTex ("Visor Texture", 2D) = "black" {}
 	}
 	SubShader 
@@ -19,7 +20,7 @@
 		sampler2D _UVDeformMap;
 		sampler2D _VisorTex;
 
-		float _Deformation;
+		float _UVDeformation;
 
 		struct Input 
 		{
@@ -33,10 +34,11 @@
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
 			float2 uvDeform = tex2D (_UVDeformMap, IN.uv_RenderTex);
+			float2 uvDeformValue = (uvDeform * _UVDeformation) + (IN.uv_RenderTex * (1 - _UVDeformation));
 
-			fixed4 albedo = tex2D (_RenderTex, uvDeform);
+			fixed4 albedo = tex2D (_RenderTex, uvDeformValue);
 			fixed4 visor = tex2D (_VisorTex, IN.uv_RenderTex);
-			o.Albedo = albedo.rgb + visor.rgb;
+			o.Albedo = albedo.rgb * visor.rgb;
 		}
 		ENDCG
 	}

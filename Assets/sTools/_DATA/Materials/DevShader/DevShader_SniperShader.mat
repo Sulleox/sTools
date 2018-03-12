@@ -67,7 +67,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _VisorTex:
-        m_Texture: {fileID: 2800000, guid: 4b94e5aba3c5e5941a6c2e9caadb4dad, type: 3}
+        m_Texture: {fileID: 2800000, guid: 927c3fd3f708b5a499c0a6ff4d2d0ee2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -88,7 +88,7 @@ Material:
     - _SrcBlend: 1
     - _Test: 0
     - _UDeformation: 3
-    - _UVDeformation: 0.1
+    - _UVDeformation: 1
     - _UVSec: 0
     - _VDeformation: 3
     - _ZWrite: 1
