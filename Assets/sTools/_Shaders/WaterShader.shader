@@ -96,9 +96,12 @@
 			UNITY_INITIALIZE_OUTPUT(Input, o);
 
 #if FLOW_MAP
+			// float4 flowMap = tex2Dlod(_FlowMap, float4(v.texcoord.xy ,0, 0));
+			// float2 flowDeform = ((flowMap * _FlowDeformation) + (v.texcoord.xy * (1-_FlowDeformation)));
+
 			//DEFORM MAP
 			float4 flowMap = tex2Dlod(_FlowMap, float4(v.texcoord.xy ,0, 0));
-			float2 flowDeform = (flowMap * _FlowDeformation + v.texcoord.xy * (1-_FlowDeformation));
+			float2 flowDeform = (flowMap * _FlowDeformation) + v.texcoord.xy;
 
 			//GENERATING SCROLLING UV
 			temp_RScrollUV = fixed4 (TRANSFORM_TEX (flowDeform, _RWaterNormal), 0, 0);
