@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: DevShader_WaterMaterial
   m_Shader: {fileID: 4800000, guid: 7282419048c2f654c88c3fb9263daa8c, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: FLOW_MAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -57,6 +57,10 @@ Material:
     - _FirstWaterNormal:
         m_Texture: {fileID: 2800000, guid: 66c6ddce74de3024d8802f7c22049160, type: 3}
         m_Scale: {x: 2, y: 2}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 2800000, guid: 6e21c3d46b57a004ab15cf534baaf50b, type: 3}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FoamTexture:
         m_Texture: {fileID: 0}
@@ -123,9 +127,10 @@ Material:
     - _BScrollYSpeed: -14
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _DepthSize: 0.792
+    - _DepthSize: 0.122
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _FlowDeformation: 0
     - _FoamSize: 0.851
     - _GScrollXSpeed: 0
     - _GScrollYSpeed: -7

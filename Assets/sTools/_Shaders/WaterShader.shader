@@ -20,6 +20,8 @@
 		_WaterColor ("Water Color", Color) = (1,1,1,1)
 		_WaveHeight("Wave Height", Range(0, 0.9)) = 0.5
 		_DepthSize ("Depth Size", Range(0, 0.9)) = 0.5
+		_FlowMap ("Flow Map", 2D) = "orange" {}
+		_FlowDeformation ("Flow Deform", Range(0, 1)) = 0.5
 	}
 	SubShader 
 	{
@@ -30,6 +32,7 @@
 		CGPROGRAM
 		#pragma surface surf Standard fullforwardshadows vertex:vert alpha
 		#pragma target 4.6
+		#pragma shader_feature FLOW_MAP
 
 		struct Input 
 		{
@@ -51,6 +54,7 @@
 			fixed4 color : COLOR;
 		};
 
+
 		//ZDEPTH TEST PARAMETERS
 		uniform sampler2D _CameraDepthTexture;
 		float _DepthSize;
@@ -64,6 +68,10 @@
 		sampler2D _RWaterNormal, _RWaterHeight;
 		sampler2D _GWaterNormal, _GWaterHeight;
 		sampler2D _BWaterNormal, _BWaterHeight;
+
+		//FLOW MAP
+		sampler2D _FlowMap;
+		float _FlowDeformation;
 
 		//SCALE TRANSFORM PARAMETERS
 		float4 _RWaterNormal_ST;
@@ -87,23 +95,44 @@
 			//ENABLE INPUT SAVE IN VERTEX
 			UNITY_INITIALIZE_OUTPUT(Input, o);
 
+#if FLOW_MAP
+			//DEFORM MAP
+			float4 flowMap = tex2Dlod(_FlowMap, float4(v.texcoord.xy ,0, 0));
+			float2 flowDeform = (flowMap * _FlowDeformation + v.texcoord.xy * (1-_FlowDeformation));
 
 			//GENERATING SCROLLING UV
-			temp_RScrollUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _RWaterNormal), 0, 0);
+			temp_RScrollUV = fixed4 (TRANSFORM_TEX (flowDeform, _RWaterNormal), 0, 0);
 			temp_RScrollX = _RScrollXSpeed * _Time;
-         	temp_RScrollY = _RScrollYSpeed *  _Time;
+         	temp_RScrollY = _RScrollYSpeed * _Time;
 			temp_RScrollUV += fixed4(temp_RScrollX, temp_RScrollY, 1, 1);
 
-			temp_GScrollUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _GWaterNormal), 0, 0);
+			temp_GScrollUV = fixed4 (TRANSFORM_TEX (flowDeform, _GWaterNormal), 0, 0);
 			temp_GScrollX = _GScrollXSpeed * _Time;
          	temp_GScrollY = _GScrollYSpeed * _Time;
 			temp_GScrollUV += fixed4(temp_GScrollX, temp_GScrollY, 1, 1);
 
-			temp_BScrollUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _BWaterNormal), 0, 0);
+			temp_BScrollUV = fixed4 (TRANSFORM_TEX (flowDeform, _BWaterNormal), 0, 0);
 			temp_BScrollX = _BScrollXSpeed * _Time;
          	temp_BScrollY = _BScrollYSpeed * _Time;
 			temp_BScrollUV += fixed4(temp_BScrollX, temp_BScrollY, 1, 1);
+		
+#else
+			//GENERATING SCROLLING UV
+			temp_RScrollUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _RWaterNormal), 0, 0);
+			temp_RScrollX = _RScrollXSpeed * _Time;
+			temp_RScrollY = _RScrollYSpeed * _Time;
+			temp_RScrollUV += fixed4(temp_RScrollX, temp_RScrollY, 1, 1);
 
+			temp_GScrollUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _GWaterNormal), 0, 0);
+			temp_GScrollX = _GScrollXSpeed * _Time;
+			temp_GScrollY = _GScrollYSpeed * _Time;
+			temp_GScrollUV += fixed4(temp_GScrollX, temp_GScrollY, 1, 1);
+
+			temp_BScrollUV = fixed4 (TRANSFORM_TEX (v.texcoord.xy, _BWaterNormal), 0, 0);
+			temp_BScrollX = _BScrollXSpeed * _Time;
+			temp_BScrollY = _BScrollYSpeed * _Time;
+			temp_BScrollUV += fixed4(temp_BScrollX, temp_BScrollY, 1, 1);
+#endif
 			//HEIGHT BLEND
 			fixed4 RWaterHeight = tex2Dlod(_RWaterHeight, temp_RScrollUV);
 			fixed4 GWaterHeight = tex2Dlod(_GWaterHeight, temp_GScrollUV);
@@ -151,6 +180,7 @@
 
 			float depthValue = LinearEyeDepth (SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(IN.scrPos)));
 			float rim = saturate(1 - (depthValue - IN.scrPos.w) * (1 - _DepthSize) / 0.2);
+
 			
 			o.Albedo = c.rgb * (1-rim);
 			o.Smoothness = 0.8;

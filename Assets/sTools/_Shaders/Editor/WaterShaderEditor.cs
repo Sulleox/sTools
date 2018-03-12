@@ -32,6 +32,11 @@ public class WaterShaderEditor : ShaderGUI
     MaterialProperty WaveHeight = null;
     MaterialProperty DepthSize = null;
 
+	//FLOW MAP PROPERTIES
+	MaterialProperty FlowMap = null;
+	MaterialProperty FlowDeformation = null;
+	GUIContent FlowMapLabel;
+
     MaterialEditor m_MaterialEditor = null;
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
@@ -43,6 +48,16 @@ public class WaterShaderEditor : ShaderGUI
 		m_MaterialEditor.ShaderProperty(WaterColor, "Water Color");
         m_MaterialEditor.ShaderProperty(WaveHeight, "Wave Height");
         m_MaterialEditor.ShaderProperty(DepthSize, "Depth Size");
+
+		EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+		//Flow Map Properties
+		m_MaterialEditor.TexturePropertySingleLine(FlowMapLabel , FlowMap);
+		m_MaterialEditor.ShaderProperty(FlowDeformation, "Flow Deformation");
+
+		Material m_Mat = m_MaterialEditor.target as Material;
+		if(FlowMap.textureValue == null) m_Mat.DisableKeyword("FLOW_MAP");
+		else m_Mat.EnableKeyword("FLOW_MAP");
 
 		EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
@@ -79,6 +94,11 @@ public class WaterShaderEditor : ShaderGUI
 		WaterColor = FindProperty("_WaterColor", properties);
 		WaveHeight = FindProperty("_WaveHeight", properties);
 		DepthSize = FindProperty("_DepthSize", properties);
+
+		//Flow Map Properties
+		FlowMap = FindProperty("_FlowMap", properties);
+		FlowDeformation = FindProperty("_FlowDeformation", properties);
+		FlowMapLabel = new GUIContent(FlowMap.displayName);
 
 		//R Properties
         RScrollXSpeed = FindProperty("_RScrollXSpeed", properties);
