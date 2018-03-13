@@ -4,7 +4,7 @@ Shader "sTools/ZDepthShader"
 {
 	Properties 
 	{
-		_RimSize ("Rim Size", Range(01, 1)) = 0.5
+		_RimSize ("Rim Size", Range(0, 1)) = 0.5
 	}
 	SubShader 
 	{
