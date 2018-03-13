@@ -59,7 +59,7 @@ Material:
         m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _FlowMap:
-        m_Texture: {fileID: 2800000, guid: e8db6d382e68cf149b9396075b7d9219, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0a13e811056c25a43b1f59142812f28d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FoamTexture:
@@ -127,10 +127,10 @@ Material:
     - _BScrollYSpeed: -14
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _DepthSize: 0.56
+    - _DepthSize: 0.689
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _FlowDeformation: 0.68
+    - _FlowDeformation: 0.28
     - _FoamSize: 0.851
     - _GScrollXSpeed: 0
     - _GScrollYSpeed: -7
