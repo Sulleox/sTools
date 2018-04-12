@@ -15,32 +15,6 @@ public class BridgeConstructor : EditorWindow
         window.Show();
     }
 
-	void OnGUI()
-	{
-		using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
-		{
-			if(GUILayout.Button("Add Select Pylon")) AddPylon(Selection.gameObjects);
-			if(GUILayout.Button("Reset Pylon List")) ResetPylonList();
-		}
-		if(pylonList.Count > 0)
-		{
-			for(int i = 0; i < pylonList.Count; i++)
-			{
-				GUILayout.Label(i + " - " + pylonList[i].name);
-			}
-		}
-
-		using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
-		{
-			if(GUILayout.Button("Generate Bridge")) GenerateBridge();
-			if(GUILayout.Button("Reset Bridge")) ResetBridge();
-		}
-
-		plankNumber = EditorGUILayout.IntField("Number of plank : ", plankNumber);
-		gravityForce = EditorGUILayout.Slider("Gravity Force : ", gravityForce, 0, 10);
-
-	}
-
 	/* BRIDGE */
 	void GenerateBridge()
 	{
@@ -84,7 +58,7 @@ public class BridgeConstructor : EditorWindow
 	}
 
 	/* PLANK */
-	int plankNumber;
+	int plankNumber = 4;
 	float gravityForce;
 	List<GameObject> plankList;
 	void GeneratePlank(GameObject firstPylon, GameObject secondPylon)
@@ -106,10 +80,13 @@ public class BridgeConstructor : EditorWindow
 				newPlank.name = "Bridge_Plank_" + i;
 
 				Vector3 plankPosition = firstPylon.transform.position + firstPylon.transform.forward * (plankDistance * (i + 1));
-				// plankPosition.y -= gravityForce * (bridgeDistance/2);
+				float gravityFactor = Mathf.Abs(((plankDistance * (i + 1)) - (bridgeDistance/2)) / (bridgeDistance/2));
+				plankPosition.y -= gravityForce * (1 - Mathf.Pow(gravityFactor, 2));
 				newPlank.transform.position = plankPosition;
-				if(i >= plankNumber/2) newPlank.transform.LookAt(secondPylon.transform);
-				else if(i < plankNumber/2) newPlank.transform.LookAt(gravityPoint.transform);
+
+				//if(i > plankNumber/2) newPlank.transform.LookAt(secondPylon.transform);
+				//else if(i <= plankNumber/2) newPlank.transform.LookAt(gravityPoint.transform);
+
 				newPlank.transform.parent = firstPylon.transform;
 				plankList.Add(newPlank);
 			}
@@ -125,5 +102,32 @@ public class BridgeConstructor : EditorWindow
 			MonoBehaviour.DestroyImmediate(plank);
 		}
 		plankList.Clear();
+	}
+
+	/* ON GUI */
+	void OnGUI()
+	{
+		using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+		{
+			if(GUILayout.Button("Add Select Pylon")) AddPylon(Selection.gameObjects);
+			if(GUILayout.Button("Reset Pylon List")) ResetPylonList();
+		}
+		if(pylonList.Count > 0)
+		{
+			for(int i = 0; i < pylonList.Count; i++)
+			{
+				GUILayout.Label(i + " - " + pylonList[i].name);
+			}
+		}
+
+		using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+		{
+			if(GUILayout.Button("Generate Bridge")) GenerateBridge();
+			if(GUILayout.Button("Reset Bridge")) ResetBridge();
+		}
+
+		plankNumber = EditorGUILayout.IntField("Number of plank : ", plankNumber);
+		gravityForce = EditorGUILayout.Slider("Gravity Force : ", gravityForce, 0, 10);
+
 	}
 }
