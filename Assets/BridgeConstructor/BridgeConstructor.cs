@@ -101,9 +101,12 @@ public class BridgeConstructor : EditorWindow
 			{
 				GameObject newPlank = GameObject.CreatePrimitive(PrimitiveType.Cube);
 				newPlank.name = "Bridge_Plank_" + i;
-				newPlank.transform.position = firstPylon.transform.position + firstPylon.transform.forward * (plankDistance * (i + 1));
-				if(i > plankNumber/2) newPlank.transform.LookAt(gravityPoint.transform);
-				else if(i <= plankNumber/2) newPlank.transform.LookAt(secondPylon.transform);
+
+				Vector3 plankPosition = firstPylon.transform.position + firstPylon.transform.forward * (plankDistance * (i + 1));
+				// plankPosition.y -= gravityForce * (bridgeDistance/2);
+				newPlank.transform.position = plankPosition;
+				if(i >= plankNumber/2) newPlank.transform.LookAt(secondPylon.transform);
+				else if(i < plankNumber/2) newPlank.transform.LookAt(gravityPoint.transform);
 				newPlank.transform.parent = firstPylon.transform;
 				plankList.Add(newPlank);
 			}
