@@ -15,6 +15,33 @@ public class BridgeConstructor : EditorWindow
         window.Show();
     }
 
+	/* ON GUI */
+	void OnGUI()
+	{
+		using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+		{
+			if(GUILayout.Button("Add Select Pylon")) AddPylon(Selection.gameObjects);
+			if(GUILayout.Button("Reset Pylon List")) ResetPylonList();
+		}
+
+		if(pylonList.Count > 0)
+		{
+			for(int i = 0; i < pylonList.Count; i++)
+			{
+				GUILayout.Label(i + " - " + pylonList[i].name);
+			}
+		}
+
+		using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+		{
+			if(GUILayout.Button("Generate Bridge")) GenerateBridge();
+			if(GUILayout.Button("Reset Bridge")) ResetBridge();
+		}
+
+		deckNumber = EditorGUILayout.IntField("Number of Deck : ", deckNumber);
+		gravityForce = EditorGUILayout.Slider("Gravity Force : ", gravityForce, 0, 10);
+	}
+
 	/* BRIDGE */
 	void GenerateBridge()
 	{
@@ -23,7 +50,7 @@ public class BridgeConstructor : EditorWindow
 	}
 
 	/* PYLONS */
-	List<GameObject> pylonList;
+	List<GameObject> pylonList = new List<GameObject>();
 	void ResetPylonList()
 	{
 		pylonList.Clear();
@@ -54,80 +81,64 @@ public class BridgeConstructor : EditorWindow
 				}
 			}
 		}
-		else Debug.Log("[BridgeConstructor] There is less than 2 pylon registered. Length = " + pylonList.Count);
+		else Debug.Log("[BridgeConstructor] There is less than 2 pylons registered. Length = " + pylonList.Count);
 	}
 
 	/* PLANK */
-	int plankNumber = 4;
-	float gravityForce;
-	List<GameObject> plankList;
+	int deckNumber = 8;
+	float gravityForce = 3;
+	List<GameObject> deckList;
 	void GeneratePlank(GameObject firstPylon, GameObject secondPylon)
 	{
-		if(plankNumber > 0)
+		if(deckNumber > 0)
 		{
-			float bridgeDistance = Vector3.Distance(firstPylon.transform.position, secondPylon.transform.position);
-			float plankDistance = bridgeDistance / (plankNumber + 1);
+			List<GameObject> tempDeckList = new List<GameObject>();
 
+			//DISTANCE
+			float bridgeDistance = Vector3.Distance(firstPylon.transform.position, secondPylon.transform.position);
+			float deckDistance = bridgeDistance / (deckNumber + 1);
+
+			//GRAVITY
 			GameObject gravityPoint = new GameObject("Temporary_Gravity_Point");
 			Vector3 gravityPointPosition = firstPylon.transform.position + firstPylon.transform.forward * (bridgeDistance/2);
 			gravityPointPosition.y -= gravityForce;
 			gravityPoint.transform.position = gravityPointPosition;
 			gravityPoint.transform.LookAt(secondPylon.transform);
 
-			for(int i = 0; i < plankNumber; i++)
+			//GENERATE PLANKS
+			for(int i = 0; i < deckNumber; i++)
 			{
-				GameObject newPlank = GameObject.CreatePrimitive(PrimitiveType.Cube);
-				newPlank.name = "Bridge_Plank_" + i;
+				GameObject newDeck = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				newDeck.name = "Bridge_Deck_" + i;
 
-				Vector3 plankPosition = firstPylon.transform.position + firstPylon.transform.forward * (plankDistance * (i + 1));
-				float gravityFactor = Mathf.Abs(((plankDistance * (i + 1)) - (bridgeDistance/2)) / (bridgeDistance/2));
+				Vector3 plankPosition = firstPylon.transform.position + firstPylon.transform.forward * (deckDistance * (i + 1));
+				float gravityFactor = Mathf.Abs(((deckDistance * (i + 1)) - (bridgeDistance/2)) / (bridgeDistance/2));
 				plankPosition.y -= gravityForce * (1 - Mathf.Pow(gravityFactor, 2));
-				newPlank.transform.position = plankPosition;
+				newDeck.transform.position = plankPosition;
 
-				//if(i > plankNumber/2) newPlank.transform.LookAt(secondPylon.transform);
-				//else if(i <= plankNumber/2) newPlank.transform.LookAt(gravityPoint.transform);
+				newDeck.transform.parent = firstPylon.transform;
+				deckList.Add(newDeck);
+				tempDeckList.Add(newDeck);
+			}
 
-				newPlank.transform.parent = firstPylon.transform;
-				plankList.Add(newPlank);
+			//PLANKS ROTATION
+			for(int y = 0; y < tempDeckList.Count; y++)
+			{
+				if(y < (tempDeckList.Count / 2)) tempDeckList[y].transform.LookAt(tempDeckList[y + 1].transform);
+				else if(y > (tempDeckList.Count / 2)) tempDeckList[y].transform.LookAt(tempDeckList[y - 1].transform);
+				else tempDeckList[y].transform.forward = firstPylon.transform.forward;
 			}
 
 			MonoBehaviour.DestroyImmediate(gravityPoint);
 		}
-		else Debug.Log("[BridgeConstructor] There is less than 1 plank change it in plank number field");
+		else Debug.Log("[BridgeConstructor] There is less than 1 deck change it in deck number field");
 	}
 	void ResetBridge()
 	{
-		foreach(GameObject plank in plankList)
+		foreach(GameObject deck in deckList)
 		{
-			MonoBehaviour.DestroyImmediate(plank);
+			MonoBehaviour.DestroyImmediate(deck);
 		}
-		plankList.Clear();
-	}
-
-	/* ON GUI */
-	void OnGUI()
-	{
-		using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
-		{
-			if(GUILayout.Button("Add Select Pylon")) AddPylon(Selection.gameObjects);
-			if(GUILayout.Button("Reset Pylon List")) ResetPylonList();
-		}
-		if(pylonList.Count > 0)
-		{
-			for(int i = 0; i < pylonList.Count; i++)
-			{
-				GUILayout.Label(i + " - " + pylonList[i].name);
-			}
-		}
-
-		using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
-		{
-			if(GUILayout.Button("Generate Bridge")) GenerateBridge();
-			if(GUILayout.Button("Reset Bridge")) ResetBridge();
-		}
-
-		plankNumber = EditorGUILayout.IntField("Number of plank : ", plankNumber);
-		gravityForce = EditorGUILayout.Slider("Gravity Force : ", gravityForce, 0, 10);
-
+		deckList.Clear();
 	}
 }
