@@ -22,9 +22,12 @@ public class BridgeConstructor : EditorWindow
 			if(GUILayout.Button("Add Select Pylon")) AddPylon(Selection.gameObjects);
 			if(GUILayout.Button("Reset Pylon List")) ResetPylonList();
 		}
-		for(int i = 0; i < pylonList.Count; i++)
+		if(pylonList.Count > 0)
 		{
-			GUILayout.Label(i + " - " + pylonList[i].name);
+			for(int i = 0; i < pylonList.Count; i++)
+			{
+				GUILayout.Label(i + " - " + pylonList[i].name);
+			}
 		}
 
 		using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
