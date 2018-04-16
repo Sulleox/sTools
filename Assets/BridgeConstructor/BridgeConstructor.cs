@@ -18,31 +18,43 @@ public class BridgeConstructor : EditorWindow
 	/* ON GUI */
 	void OnGUI()
 	{
+		//PYLONS
 		using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
 		{
 			if(GUILayout.Button("Add Select Pylon")) AddPylon(Selection.gameObjects);
 			if(GUILayout.Button("Reset Pylon List")) ResetPylonList();
 		}
-
-		if(pylonList.Count > 0)
+		rotatePylons = EditorGUILayout.Toggle("Rotate Pylon : ", rotatePylons);
+		using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
 		{
-			for(int i = 0; i < pylonList.Count; i++)
+			if(pylonList.Count > 0)
 			{
-				GUILayout.Label(i + " - " + pylonList[i].name);
+				for(int i = 0; i < pylonList.Count; i++)
+				{
+					GUILayout.Label(i + " - " + pylonList[i].name);
+				}
 			}
 		}
 
+		//DECK
+		using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+		{
+			deck = (GameObject) EditorGUILayout.ObjectField ("Deck Prefab : ", deck, typeof(GameObject), true);
+			deckNumber = EditorGUILayout.IntField("Deck Number : ", deckNumber);
+			gravityForce = EditorGUILayout.Slider("Gravity Force : ", gravityForce, 0, 10);
+		}
+
+		//GENERATOR
 		using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
 		{
 			if(GUILayout.Button("Generate Bridge")) GenerateBridge();
 			if(GUILayout.Button("Reset Bridge")) ResetBridge();
 		}
 
-		deckNumber = EditorGUILayout.IntField("Number of Deck : ", deckNumber);
-		gravityForce = EditorGUILayout.Slider("Gravity Force : ", gravityForce, 0, 10);
 	}
 
 	/* BRIDGE */
+	bool rotatePylons;
 	void GenerateBridge()
 	{
 		ResetBridge();
@@ -73,10 +85,13 @@ public class BridgeConstructor : EditorWindow
 		{
 			for(int i = 0; i < pylonList.Count; i++)
 			{
-				if(i == (pylonList.Count - 1)) pylonList[i].transform.LookAt(pylonList[i-1].transform);
+				if(i == (pylonList.Count - 1)) 
+				{
+					if(rotatePylons) pylonList[i].transform.LookAt(pylonList[i-1].transform);
+				}
 				else
 				{
-					pylonList[i].transform.LookAt(pylonList[i+1].transform);
+					if(rotatePylons) pylonList[i].transform.LookAt(pylonList[i+1].transform);
 					GeneratePlank(pylonList[i], pylonList[i+1]);
 				}
 			}
@@ -88,6 +103,7 @@ public class BridgeConstructor : EditorWindow
 	int deckNumber = 8;
 	float gravityForce = 3;
 	List<GameObject> deckList;
+	GameObject deck;
 	void GeneratePlank(GameObject firstPylon, GameObject secondPylon)
 	{
 		if(deckNumber > 0)
