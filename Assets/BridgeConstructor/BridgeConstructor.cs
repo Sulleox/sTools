@@ -42,7 +42,12 @@ public class BridgeConstructor : EditorWindow
 				{
 					for(int i = 0; i < pylonList.Count; i++)
 					{
-						GUILayout.Label(i + " - " + pylonList[i].name);
+						if(pylonList[i] != null) pylonList[i] = (GameObject) EditorGUILayout.ObjectField(i + " - ", pylonList[i], typeof(GameObject), true);
+						else 
+						{
+							pylonList.RemoveAt(i);
+							lastPylonPositions.RemoveAt(i);
+						}
 					}
 				}
 			}
@@ -54,7 +59,8 @@ public class BridgeConstructor : EditorWindow
 			EditorGUI.BeginChangeCheck();
 			deckPrefab = (GameObject) EditorGUILayout.ObjectField ("Deck Prefab : ", deckPrefab, typeof(GameObject), true);
 			deckNumber = EditorGUILayout.IntField("Deck Number : ", deckNumber);
-			rotateDeck = EditorGUILayout.Toggle("Rotate Deck : ", rotateDeck);
+			deckRotate = EditorGUILayout.Toggle("Activate Deck Rotation : ", deckRotate);
+			if(deckRotate) deckLookAt = EditorGUILayout.Toggle("Activate Deck LookAt : ", deckLookAt);
 			gravityForce = EditorGUILayout.Slider("Gravity Force : ", gravityForce, 0, 10);
 			if(EditorGUI.EndChangeCheck())
 			{
@@ -66,8 +72,11 @@ public class BridgeConstructor : EditorWindow
 		{
 			EditorGUI.BeginChangeCheck();
 			generateRope = EditorGUILayout.Toggle("Generate Rope : ", generateRope);
-			ropeMat = (Material) EditorGUILayout.ObjectField("Rope Material : ", ropeMat, typeof(Material), true);
-			ropeSize = EditorGUILayout.Slider("Rope Size : ",ropeSize, 0, 1);
+			if(generateRope)
+			{
+				ropeMat = (Material) EditorGUILayout.ObjectField("Rope Material : ", ropeMat, typeof(Material), true);
+				ropeSize = EditorGUILayout.Slider("Rope Size : ",ropeSize, 0, 1);
+			}
 			if(EditorGUI.EndChangeCheck())
 			{
 				GenerateBridge();
@@ -77,7 +86,12 @@ public class BridgeConstructor : EditorWindow
 		//GENERATOR
 		using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
 		{
+			EditorGUI.BeginChangeCheck();
 			rotatePylons = EditorGUILayout.Toggle("Rotate Pylon : ", rotatePylons);
+			if(EditorGUI.EndChangeCheck())
+			{
+				GenerateBridge();
+			}
 			using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
 			{
 				if(GUILayout.Button("Generate Bridge")) GenerateBridge();
@@ -93,26 +107,38 @@ public class BridgeConstructor : EditorWindow
 	void GenerateBridge()
 	{
 		ResetBridge();
-		GeneratePylons();
+		RotatePylons();
 	}
 
 	/* PYLONS */
+	GameObject pylonPrefab;
 	List<GameObject> pylonList = new List<GameObject>();
+	List<Vector3> lastPylonPositions = new List<Vector3>();
 	void ResetPylonList()
 	{
 		pylonList.Clear();
+		lastPylonPositions.Clear();
+		EditorApplication.update -= CheckPylonsPosition;
 		Debug.Log("[BridgeConstructor] Pylon list clear, new size : " + pylonList.Count);
 	}
-
-	GameObject pylonPrefab;
 	void GenerateNewPylon()
 	{
+		//GAMEOBJECT
 		GameObject newPylon;
 		if(pylonPrefab != null) newPylon = GameObject.Instantiate(pylonPrefab);
 		else newPylon = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-		newPylon.transform.position = Vector3.zero;
+		//POSITION
+		Vector3 spawnPosition;
+		if(pylonList.Count > 1) spawnPosition = lastPylonPositions[lastPylonPositions.Count-1] + Vector3.right * 20f;
+		else spawnPosition = Vector3.zero;
+		newPylon.transform.position = spawnPosition;
+
 		newPylon.name = "Pylon " + pylonList.Count;
 		pylonList.Add(newPylon);
+		lastPylonPositions.Add(newPylon.transform.position);
+
+		if(pylonList.Count > 1) GenerateBridge();
+		EditorApplication.update += CheckPylonsPosition;
 	}
 	void AddPylon(GameObject[] newPylon)
 	{
@@ -121,9 +147,13 @@ public class BridgeConstructor : EditorWindow
 			if(!pylonList.Contains(newPylon[i]))
 			{
 				pylonList.Add(newPylon[i]);
+				lastPylonPositions.Add(newPylon[i].transform.position);
+				EditorApplication.update += CheckPylonsPosition;
 			}
 			else Debug.Log("[BridgeConstructor] Pylon already registered : " + newPylon[i]);
 		}
+
+		if(pylonList.Count > 1) GenerateBridge();
 	}
 	void RemovePylon(GameObject[] newPylon)
 	{
@@ -132,10 +162,11 @@ public class BridgeConstructor : EditorWindow
 			if(pylonList.Contains(pylon))
 			{
 				pylonList.Remove(pylon);
+				lastPylonPositions.Remove(pylon.transform.position);
 			}
 		}
 	}
-	void GeneratePylons()
+	void RotatePylons()
 	{
 		if(pylonList.Count >= 2)
 		{
@@ -166,7 +197,8 @@ public class BridgeConstructor : EditorWindow
 	}
 
 	/* DECK & ROPE*/
-	bool rotateDeck;
+	bool deckRotate;
+	bool deckLookAt;
 	int deckNumber = 8;
 	float gravityForce = 3;
 	GameObject deckPrefab;
@@ -175,7 +207,7 @@ public class BridgeConstructor : EditorWindow
 	{
 		if(deckNumber > 0)
 		{
-			List<GameObject> tempDeckList = new List<GameObject>();
+			List<GameObject> tempDeckList = new List<GameObject>(0);
 
 			//DISTANCE
 			float bridgeDistance = Vector3.Distance(firstPylon.transform.position, secondPylon.transform.position);
@@ -214,13 +246,17 @@ public class BridgeConstructor : EditorWindow
 			}
 
 			//DECKS LOCAL ROTATION
-			if(rotateDeck)
+			if(deckRotate)
 			{
 				for(int y = 0; y < tempDeckList.Count; y++)
 				{
-					if(y < (tempDeckList.Count / 2)) tempDeckList[y].transform.LookAt(tempDeckList[y + 1].transform);
-					else if(y > (tempDeckList.Count / 2)) tempDeckList[y].transform.LookAt(tempDeckList[y - 1].transform);
-					else tempDeckList[y].transform.forward = deckPivot.transform.forward;
+					if(deckLookAt)
+					{
+						if(y < (tempDeckList.Count / 2)) tempDeckList[y].transform.LookAt(tempDeckList[y + 1].transform);
+						else if(y > (tempDeckList.Count / 2)) tempDeckList[y].transform.LookAt(tempDeckList[y - 1].transform);
+						else tempDeckList[y].transform.forward = deckPivot.transform.forward;
+					}
+					else tempDeckList[y].transform.forward = firstPylon.transform.forward;
 				}
 			}
 
@@ -249,13 +285,13 @@ public class BridgeConstructor : EditorWindow
 			ropeRenderer.endWidth = ropeSize;
 			if(i == 0) 
 			{
-				ropeRenderer.SetPosition(0, firstPylon.transform.right + firstPylon.transform.position);
-				ropeRenderer.SetPosition( tempDeckList.Count + 1, firstPylon.transform.right + secondPylon.transform.position);
+				ropeRenderer.SetPosition(0, firstPylon.transform.right + firstPylon.transform.position + Vector3.up);
+				ropeRenderer.SetPosition( tempDeckList.Count + 1, firstPylon.transform.right + secondPylon.transform.position + Vector3.up);
 			}
 			else
 			{
-				ropeRenderer.SetPosition(0, firstPylon.transform.position - firstPylon.transform.right);
-				ropeRenderer.SetPosition( tempDeckList.Count + 1, secondPylon.transform.position - firstPylon.transform.right);
+				ropeRenderer.SetPosition(0, firstPylon.transform.position - firstPylon.transform.right + Vector3.up);
+				ropeRenderer.SetPosition( tempDeckList.Count + 1, secondPylon.transform.position - firstPylon.transform.right + Vector3.up);
 			} 
 			for(int j = 0; j < tempDeckList.Count; j++)
 			{
@@ -283,4 +319,19 @@ public class BridgeConstructor : EditorWindow
 		ropeList.Clear();
 	}
 	#endregion
+
+	void CheckPylonsPosition()
+	{
+		if(pylonList.Count > 1 && lastPylonPositions.Count > 1)
+		{
+			for(int i = 0; i < pylonList.Count; i++)
+			{
+				if(pylonList[i].transform.position != lastPylonPositions[i])
+				{
+					lastPylonPositions[i] = pylonList[i].transform.position;
+					GenerateBridge();
+				}
+			}
+		}
+	}
 }
