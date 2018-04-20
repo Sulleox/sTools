@@ -71,6 +71,7 @@ public class BridgeConstructor : EditorWindow
 			{
 				ropeMat = (Material) EditorGUILayout.ObjectField("Rope Material : ", ropeMat, typeof(Material), true);
 				ropeSize = EditorGUILayout.Slider("Rope Size : ",ropeSize, 0, 1);
+				ropeYPosition = EditorGUILayout.Slider("Rope Y Offset : ", ropeYPosition, 0, 10);
 			}
 			if(EditorGUI.EndChangeCheck())
 			{
@@ -89,7 +90,7 @@ public class BridgeConstructor : EditorWindow
 			}
 			using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
 			{
-				if(GUILayout.Button("Generate Bridge")) GenerateBridge();
+				if(GUILayout.Button("Preview Bridge")) GenerateBridge();
 				if(GUILayout.Button("Reset Bridge")) ResetBridge();
 			}
 		}
@@ -98,7 +99,6 @@ public class BridgeConstructor : EditorWindow
 
 	#region GENERATOR
 	/* BRIDGE */
-	bool rotatePylons;
 	void GenerateBridge()
 	{
 		ResetBridge();
@@ -106,6 +106,7 @@ public class BridgeConstructor : EditorWindow
 	}
 
 	/* PYLONS */
+	bool rotatePylons = true;
 	GameObject pylonPrefab;
 	List<GameObject> pylonList = new List<GameObject>();
 	List<Vector3> lastPylonPositions = new List<Vector3>();
@@ -191,8 +192,8 @@ public class BridgeConstructor : EditorWindow
 		else Debug.Log("[BridgeConstructor] There is less than 2 pylons registered. Length = " + pylonList.Count);
 	}
 
-	/* DECK & ROPE*/
-	bool deckRotate;
+	/* DECK */
+	bool deckRotate = true;
 	bool deckLookAt;
 	int deckNumber = 8;
 	float gravityForce = 3;
@@ -230,10 +231,11 @@ public class BridgeConstructor : EditorWindow
 				if(deckPrefab != null) newDeck = GameObject.Instantiate(deckPrefab);
 				else newDeck = GameObject.CreatePrimitive(PrimitiveType.Cube);
 				newDeck.name = "Bridge_Deck_" + i;
-				Vector3 plankPosition = deckPivot.transform.position + deckPivot.transform.forward * (deckDistance * (i + 1));
+
+				Vector3 deckPosition = deckPivot.transform.position + deckPivot.transform.forward * (deckDistance * (i + 1));
 				float gravityFactor = Mathf.Abs(((deckDistance * (i + 1)) - (bridgeDistance/2)) / (bridgeDistance/2));
-				plankPosition.y -= gravityForce * (1 - Mathf.Pow(gravityFactor, 2));
-				newDeck.transform.position = plankPosition;
+				deckPosition.y -= gravityForce * (1 - Mathf.Pow(gravityFactor, 2));
+				newDeck.transform.position = deckPosition;
 				
 				newDeck.transform.parent = deckPivot.transform;
 				deckList.Add(newDeck);
@@ -261,18 +263,26 @@ public class BridgeConstructor : EditorWindow
 		else Debug.Log("[BridgeConstructor] There is less than 1 deckPrefab change it in deckPrefab number field");
 	}
 
-	//GENERATE ROPES
-	bool generateRope;
+	/* ROPES */
+	bool generateRope = true;
 	Material ropeMat;
 	List<GameObject> ropeList;
 	float ropeSize = 0.15f;
+	float ropeYPosition = 1f;
 	void GenerateRope(GameObject firstPylon, GameObject secondPylon, List<GameObject> tempDeckList)
 	{
+		//DISTANCE
+		float bridgeDistance = Vector3.Distance(firstPylon.transform.position, secondPylon.transform.position);
+		float ropeDistance = bridgeDistance / (deckNumber + 1);
+
 		for(int i = 0; i < 2; i++)
 		{
+			//PARENT GAMEOBJECT
 			GameObject rope = new GameObject("ropeRenderer");
 			rope.transform.position = firstPylon.transform.position;
 			rope.transform.parent = firstPylon.transform;
+
+			//RENDERER
 			LineRenderer ropeRenderer = rope.AddComponent<LineRenderer>();
 			ropeRenderer.sharedMaterial = ropeMat;
 			ropeRenderer.positionCount = tempDeckList.Count + 2;
@@ -280,19 +290,27 @@ public class BridgeConstructor : EditorWindow
 			ropeRenderer.endWidth = ropeSize;
 			if(i == 0) 
 			{
-				ropeRenderer.SetPosition(0, firstPylon.transform.right + firstPylon.transform.position + Vector3.up);
-				ropeRenderer.SetPosition( tempDeckList.Count + 1, firstPylon.transform.right + secondPylon.transform.position + Vector3.up);
+				ropeRenderer.SetPosition(0, firstPylon.transform.right + firstPylon.transform.position + (Vector3.up * ropeYPosition));
+				ropeRenderer.SetPosition( tempDeckList.Count + 1, firstPylon.transform.right + secondPylon.transform.position + (Vector3.up * ropeYPosition));
 			}
 			else
 			{
-				ropeRenderer.SetPosition(0, firstPylon.transform.position - firstPylon.transform.right + Vector3.up);
-				ropeRenderer.SetPosition( tempDeckList.Count + 1, secondPylon.transform.position - firstPylon.transform.right + Vector3.up);
+				ropeRenderer.SetPosition(0, firstPylon.transform.position - firstPylon.transform.right + (Vector3.up * ropeYPosition));
+				ropeRenderer.SetPosition( tempDeckList.Count + 1, secondPylon.transform.position - firstPylon.transform.right + (Vector3.up* ropeYPosition));
 			} 
+
 			for(int j = 0; j < tempDeckList.Count; j++)
 			{
-				Vector3 vertexPosition;
-				if(i == 0) vertexPosition = firstPylon.transform.right + tempDeckList[j].transform.position + Vector3.up;
-				else vertexPosition = tempDeckList[j].transform.position - firstPylon.transform.right + Vector3.up;
+				Vector3 vertexPosition = Vector3.zero;
+				float gravityFactor = Mathf.Abs(((ropeDistance * (j + 1)) - (bridgeDistance/2)) / (bridgeDistance/2));
+				if(i == 0) 
+				{
+					vertexPosition = firstPylon.transform.right + tempDeckList[j].transform.position + (Vector3.up * Mathf.Pow(gravityFactor, 2)* ropeYPosition);
+				}
+				else 
+				{
+					vertexPosition = tempDeckList[j].transform.position - firstPylon.transform.right + (Vector3.up * Mathf.Pow(gravityFactor, 2) * ropeYPosition);
+				}
 				ropeRenderer.SetPosition(j+1, vertexPosition);
 			}
 			ropeList.Add(rope);
