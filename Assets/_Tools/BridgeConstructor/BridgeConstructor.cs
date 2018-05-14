@@ -71,7 +71,7 @@ public class BridgeConstructor : EditorWindow
 			{
 				ropeMat = (Material) EditorGUILayout.ObjectField("Rope Material : ", ropeMat, typeof(Material), true);
 				ropeSize = EditorGUILayout.Slider("Rope Size : ",ropeSize, 0, 1);
-				ropeYPosition = EditorGUILayout.Slider("Rope Y Offset : ", ropeYPosition, 0, 10);
+				ropeAttachYPos = EditorGUILayout.Slider("Rope Attach Y Offset : ", ropeAttachYPos, 0, 10);
 			}
 			if(EditorGUI.EndChangeCheck())
 			{
@@ -268,7 +268,7 @@ public class BridgeConstructor : EditorWindow
 	Material ropeMat;
 	List<GameObject> ropeList;
 	float ropeSize = 0.15f;
-	float ropeYPosition = 1f;
+	float ropeAttachYPos = 1f;
 	void GenerateRope(GameObject firstPylon, GameObject secondPylon, List<GameObject> tempDeckList)
 	{
 		//DISTANCE
@@ -290,13 +290,13 @@ public class BridgeConstructor : EditorWindow
 			ropeRenderer.endWidth = ropeSize;
 			if(i == 0) 
 			{
-				ropeRenderer.SetPosition(0, firstPylon.transform.right + firstPylon.transform.position + (Vector3.up * ropeYPosition));
-				ropeRenderer.SetPosition( tempDeckList.Count + 1, firstPylon.transform.right + secondPylon.transform.position + (Vector3.up * ropeYPosition));
+				ropeRenderer.SetPosition(0, firstPylon.transform.right + firstPylon.transform.position + (Vector3.up * ropeAttachYPos));
+				ropeRenderer.SetPosition( tempDeckList.Count + 1, firstPylon.transform.right + secondPylon.transform.position + (Vector3.up * ropeAttachYPos));
 			}
 			else
 			{
-				ropeRenderer.SetPosition(0, firstPylon.transform.position - firstPylon.transform.right + (Vector3.up * ropeYPosition));
-				ropeRenderer.SetPosition( tempDeckList.Count + 1, secondPylon.transform.position - firstPylon.transform.right + (Vector3.up* ropeYPosition));
+				ropeRenderer.SetPosition(0, firstPylon.transform.position - firstPylon.transform.right + (Vector3.up * ropeAttachYPos));
+				ropeRenderer.SetPosition( tempDeckList.Count + 1, secondPylon.transform.position - firstPylon.transform.right + (Vector3.up* ropeAttachYPos));
 			} 
 
 			for(int j = 0; j < tempDeckList.Count; j++)
@@ -305,11 +305,11 @@ public class BridgeConstructor : EditorWindow
 				float gravityFactor = Mathf.Abs(((ropeDistance * (j + 1)) - (bridgeDistance/2)) / (bridgeDistance/2));
 				if(i == 0) 
 				{
-					vertexPosition = firstPylon.transform.right + tempDeckList[j].transform.position + (Vector3.up * Mathf.Pow(gravityFactor, 2)* ropeYPosition);
+					vertexPosition = firstPylon.transform.right + tempDeckList[j].transform.position + (Vector3.up * Mathf.Pow(gravityFactor, 2)* ropeAttachYPos);
 				}
 				else 
 				{
-					vertexPosition = tempDeckList[j].transform.position - firstPylon.transform.right + (Vector3.up * Mathf.Pow(gravityFactor, 2) * ropeYPosition);
+					vertexPosition = tempDeckList[j].transform.position - firstPylon.transform.right + (Vector3.up * Mathf.Pow(gravityFactor, 2) * ropeAttachYPos);
 				}
 				ropeRenderer.SetPosition(j+1, vertexPosition);
 			}

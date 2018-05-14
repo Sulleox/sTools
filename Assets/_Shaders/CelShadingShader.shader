@@ -4,6 +4,7 @@
 	{
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_RampTex ("Ramp Map", 2D) = "white" {}
+		_BumpMap ("Normal Map", 2D) = "bump" {}
 	}
 	SubShader 
 	{
@@ -23,6 +24,7 @@
 
 		sampler2D _MainTex;
 		sampler2D _RampTex;
+		sampler2D _BumpMap;
 
 		UNITY_INSTANCING_BUFFER_START(Props)
 		UNITY_INSTANCING_BUFFER_END(Props)
@@ -30,6 +32,7 @@
 		void surf (Input IN, inout SurfaceOutputStandard o) 
 		{
 			fixed4 mainTex = tex2D (_MainTex, IN.uv_MainTex);
+			o.Normal = UnpackNormal (tex2D(_BumpMap, IN.uv_MainTex));
 			o.Albedo = mainTex.rgb;
 		}
 
@@ -41,8 +44,8 @@
 			uvRamp.x = (NormalDotLight+1)/2;
 			fixed ramp = tex2D (_RampTex, uvRamp);
 
-			half4 finalColor;
-			finalColor.rgb = ramp * s.Albedo;
+			half3 temp = ramp * s.Albedo;
+			half4 finalColor = half4(temp.x,temp.y,temp.z,0);
 			return finalColor;
 		}
 		ENDCG

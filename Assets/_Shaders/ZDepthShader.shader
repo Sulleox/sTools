@@ -1,6 +1,4 @@
-﻿//SPECIAL THANKS TO LOUIS VALET
-
-Shader "sTools/ZDepthShader" 
+﻿Shader "sTools/ZDepth Shader (Fragment)" 
 {
 	Properties 
 	{
@@ -19,14 +17,13 @@ Shader "sTools/ZDepthShader"
 			#include "UnityCG.cginc"
 
 			sampler2D _CameraDepthTexture;
+			float _RimSize;
 
 			struct v2f 
 			{
 				float4 pos : SV_POSITION;
 				float4 scrPos:TEXCOORD1;
 			};
-
-			float _RimSize;
 
 			//Vertex Shader
 			v2f vert (appdata_base v)

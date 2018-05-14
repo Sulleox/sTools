@@ -4,7 +4,7 @@
 	{
 		_OutlineColor ("Outline Color", Color) = (0,0,0,1)
         _OutlineWidth ("Outline width", Range (0, 0.1)) = .005
-        _MainTex ("Albedo", 2D) = "white" { }
+        _MainTex ("Albedo", 2D) = "white" {}
 	}
 
 	SubShader 
