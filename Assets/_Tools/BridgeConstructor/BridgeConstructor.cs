@@ -72,6 +72,7 @@ public class BridgeConstructor : EditorWindow
 				ropeMat = (Material) EditorGUILayout.ObjectField("Rope Material : ", ropeMat, typeof(Material), true);
 				ropeSize = EditorGUILayout.Slider("Rope Size : ",ropeSize, 0, 1);
 				ropeAttachYPos = EditorGUILayout.Slider("Rope Attach Y Offset : ", ropeAttachYPos, 0, 10);
+				ropeYOffest = EditorGUILayout.Slider("Rope Y Offset : ", ropeYOffest, 0, 2);
 			}
 			if(EditorGUI.EndChangeCheck())
 			{
@@ -92,6 +93,7 @@ public class BridgeConstructor : EditorWindow
 			{
 				if(GUILayout.Button("Preview Bridge")) GenerateBridge();
 				if(GUILayout.Button("Reset Bridge")) ResetBridge();
+				if(GUILayout.Button("Save Bridge as Prefab")) SaveBridgeAsPrefab();
 			}
 		}
 	}
@@ -105,7 +107,40 @@ public class BridgeConstructor : EditorWindow
 		RotatePylons();
 	}
 
+	void ResetBridge()
+	{
+		foreach(GameObject deckPrefab in deckList)
+		{
+			MonoBehaviour.DestroyImmediate(deckPrefab);
+		}
+		deckList.Clear();
+
+		foreach(GameObject rope in ropeList)
+		{
+			MonoBehaviour.DestroyImmediate(rope);
+		}
+		ropeList.Clear();
+	}
+
+	string prefabDestination = string.Empty;
+	List<GameObject> bridgePrefabs = new List<GameObject>();
+	void SaveBridgeAsPrefab()
+	{
+		GameObject newPrefab = new GameObject("BridgePrefab_" + bridgePrefabs.Count);
+		newPrefab.transform.position = pylonList[0].transform.position;
+		foreach(GameObject pylon in pylonList)
+		{
+			pylon.transform.parent = newPrefab.transform;
+		}
+
+		if(prefabDestination == string.Empty)
+			prefabDestination = EditorUtility.OpenFolderPanel("Select prefab folder", "folder", "myPrefab");
+		else
+			PrefabUtility.CreatePrefab(prefabDestination + "/" + newPrefab.name, newPrefab);
+	}
+
 	/* PYLONS */
+	#region PYLON
 	bool rotatePylons = true;
 	GameObject pylonPrefab;
 	List<GameObject> pylonList = new List<GameObject>();
@@ -192,7 +227,36 @@ public class BridgeConstructor : EditorWindow
 		else Debug.Log("[BridgeConstructor] There is less than 2 pylons registered. Length = " + pylonList.Count);
 	}
 
+	void CheckPylonsPosition()
+	{
+		if(pylonList.Count > 0 && lastPylonPositions.Count > 0)
+		{
+			for(int i = 0; i < pylonList.Count; i++)
+			{
+				if(pylonList[i] == null)
+				{
+					MonoBehaviour.DestroyImmediate(pylonList[i]);
+					pylonList.RemoveAt(i);
+					lastPylonPositions.RemoveAt(i);
+					GenerateBridge();
+					Repaint();
+				}
+				else
+				{
+					if(pylonList[i].transform.position != lastPylonPositions[i])
+					{
+						lastPylonPositions[i] = pylonList[i].transform.position;
+						GenerateBridge();
+					}
+				}
+			}
+		}
+	}
+	
+	#endregion
+
 	/* DECK */
+	#region DECK
 	bool deckRotate = true;
 	bool deckLookAt;
 	int deckNumber = 8;
@@ -262,13 +326,16 @@ public class BridgeConstructor : EditorWindow
 		}
 		else Debug.Log("[BridgeConstructor] There is less than 1 deckPrefab change it in deckPrefab number field");
 	}
+	#endregion
 
 	/* ROPES */
+	#region ROPES
 	bool generateRope = true;
 	Material ropeMat;
 	List<GameObject> ropeList;
 	float ropeSize = 0.15f;
 	float ropeAttachYPos = 1f;
+	float ropeYOffest = 0.5f;
 	void GenerateRope(GameObject firstPylon, GameObject secondPylon, List<GameObject> tempDeckList)
 	{
 		//DISTANCE
@@ -290,13 +357,13 @@ public class BridgeConstructor : EditorWindow
 			ropeRenderer.endWidth = ropeSize;
 			if(i == 0) 
 			{
-				ropeRenderer.SetPosition(0, firstPylon.transform.right + firstPylon.transform.position + (Vector3.up * ropeAttachYPos));
-				ropeRenderer.SetPosition( tempDeckList.Count + 1, firstPylon.transform.right + secondPylon.transform.position + (Vector3.up * ropeAttachYPos));
+				ropeRenderer.SetPosition(0, firstPylon.transform.right + firstPylon.transform.position + (Vector3.up * ropeAttachYPos) + (Vector3.up * ropeYOffest));
+				ropeRenderer.SetPosition( tempDeckList.Count + 1, firstPylon.transform.right + secondPylon.transform.position + (Vector3.up * ropeAttachYPos) + (Vector3.up * ropeYOffest));
 			}
 			else
 			{
-				ropeRenderer.SetPosition(0, firstPylon.transform.position - firstPylon.transform.right + (Vector3.up * ropeAttachYPos));
-				ropeRenderer.SetPosition( tempDeckList.Count + 1, secondPylon.transform.position - firstPylon.transform.right + (Vector3.up* ropeAttachYPos));
+				ropeRenderer.SetPosition(0, firstPylon.transform.position - firstPylon.transform.right + (Vector3.up * ropeAttachYPos) + (Vector3.up * ropeYOffest));
+				ropeRenderer.SetPosition( tempDeckList.Count + 1, secondPylon.transform.position - firstPylon.transform.right + (Vector3.up* ropeAttachYPos) + (Vector3.up * ropeYOffest));
 			} 
 
 			for(int j = 0; j < tempDeckList.Count; j++)
@@ -305,58 +372,18 @@ public class BridgeConstructor : EditorWindow
 				float gravityFactor = Mathf.Abs(((ropeDistance * (j + 1)) - (bridgeDistance/2)) / (bridgeDistance/2));
 				if(i == 0) 
 				{
-					vertexPosition = firstPylon.transform.right + tempDeckList[j].transform.position + (Vector3.up * Mathf.Pow(gravityFactor, 2)* ropeAttachYPos);
+					vertexPosition = firstPylon.transform.right + tempDeckList[j].transform.position + (Vector3.up * Mathf.Pow(gravityFactor, 2)* ropeAttachYPos) + (Vector3.up * ropeYOffest);
 				}
 				else 
 				{
-					vertexPosition = tempDeckList[j].transform.position - firstPylon.transform.right + (Vector3.up * Mathf.Pow(gravityFactor, 2) * ropeAttachYPos);
+					vertexPosition = tempDeckList[j].transform.position - firstPylon.transform.right + (Vector3.up * Mathf.Pow(gravityFactor, 2) * ropeAttachYPos)+ (Vector3.up * ropeYOffest);
 				}
 				ropeRenderer.SetPosition(j+1, vertexPosition);
 			}
 			ropeList.Add(rope);
 		}
 	}
+	#endregion
 
-	void ResetBridge()
-	{
-		foreach(GameObject deckPrefab in deckList)
-		{
-			MonoBehaviour.DestroyImmediate(deckPrefab);
-		}
-		deckList.Clear();
-
-		foreach(GameObject rope in ropeList)
-		{
-			MonoBehaviour.DestroyImmediate(rope);
-		}
-		ropeList.Clear();
-	}
-
-	void CheckPylonsPosition()
-	{
-		if(pylonList.Count > 0 && lastPylonPositions.Count > 0)
-		{
-			for(int i = 0; i < pylonList.Count; i++)
-			{
-				if(pylonList[i] == null)
-				{
-					MonoBehaviour.DestroyImmediate(pylonList[i]);
-					pylonList.RemoveAt(i);
-					lastPylonPositions.RemoveAt(i);
-					GenerateBridge();
-					Repaint();
-				}
-				else
-				{
-					if(pylonList[i].transform.position != lastPylonPositions[i])
-					{
-						lastPylonPositions[i] = pylonList[i].transform.position;
-						GenerateBridge();
-					}
-				}
-			}
-		}
-	}
-	
 	#endregion
 }
