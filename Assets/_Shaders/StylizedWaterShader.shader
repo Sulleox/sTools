@@ -19,9 +19,9 @@
 		#pragma target 3.0
 
 		//ZDEPTH PARAMETERS
-		float _RimAtten;
 		sampler2D _CameraDepthTexture;
 		float _DepthSize;
+		float _RimAtten;
 
 		//WATER
 		sampler2D _WaterTex, _RimTex;
