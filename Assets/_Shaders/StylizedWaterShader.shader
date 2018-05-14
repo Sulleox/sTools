@@ -41,11 +41,12 @@
 		{
 			//ZDEPTH
 			float depthValue = LinearEyeDepth (SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, UNITY_PROJ_COORD(IN.screenPos)));
-			float zMask = pow(saturate((1 - (depthValue - IN.screenPos.w) * (1 - _DepthSize) / 0.2)), _DepthAtten);
+			float zMask = saturate((1 - (depthValue - IN.screenPos.w) * (1 - _DepthSize) / 0.2));
+			float zMaskAtten = pow(saturate((1 - (depthValue - IN.screenPos.w) * (1 - _DepthSize) / 0.2)), _DepthAtten);
 
 			float4 rim = tex2D(_RimTex, IN.uv_RimTex) * zMask;
 			float4 rimColor = (zMask * _RimColor);
-			float4 rimLerp = lerp(rimColor, _WaterColor, (1-zMask)) * zMask;
+			float4 rimLerp = lerp(rimColor, _WaterColor, (1-zMask)) * zMaskAtten;
 
 			float4 water = (tex2D(_WaterTex, IN.uv_WaterTex) * _WaterColor) * (1-zMask);
 			float4 color = rim + rimLerp + water;
