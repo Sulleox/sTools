@@ -18,38 +18,48 @@
 
 		#region ONGUI
 		/* ON GUI */
+		bool showPylonParameters = true;
+		bool showDeckParameters = true;
+		bool showRopeParameters = true;
+		bool showPrefabParameters = true;
+
 		void OnGUI()
 		{
 			//PYLONS
 			using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
 			{
-				using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+				showPylonParameters = EditorGUILayout.Foldout(showPylonParameters, "Pylons");
+				if(showPylonParameters)
 				{
-					if(GUILayout.Button("Add Select Pylon")) AddPylon(Selection.gameObjects);
-					if(GUILayout.Button("Remove Select Pylon")) RemovePylon(Selection.gameObjects);
-				}
-				using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
-				{
-					if(GUILayout.Button("Generate New Pylon")) GenerateNewPylon();
-					if(GUILayout.Button("Reset Pylon List")) ResetPylonList();
-				}
-
-				pylonPrefab = (GameObject) EditorGUILayout.ObjectField ("Pylon Prefab  : ", pylonPrefab, typeof(GameObject), true);
-				GUILayout.Label("Pylon List : " + pylonList.Count);
-
-				using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
-				{
-					if(pylonList.Count > 0)
+					using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
 					{
-						for(int i = 0; i < pylonList.Count; i++)
-						{
-							if(pylonList.Count == 0) break;
+						if(GUILayout.Button("Add Select Pylon", GUILayout.Width((position.width - 27)/2))) AddPylon(Selection.gameObjects);
+						if(GUILayout.Button("Remove Select Pylon", GUILayout.Width((position.width - 27)/2))) RemovePylon(Selection.gameObjects);
+					}
+					using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+					{
+						if(GUILayout.Button("Generate New Pylon", GUILayout.Width((position.width - 27)/2))) GenerateNewPylon();
+						if(GUILayout.Button("Reset Pylon List", GUILayout.Width((position.width - 27)/2))) ResetPylonList();
+					}
 
-							if(pylonList[i] != null) pylonList[i] = (GameObject) EditorGUILayout.ObjectField(i + " - ", pylonList[i], typeof(GameObject), true);
-							else
+					pylonPrefab = (GameObject) EditorGUILayout.ObjectField ("Pylon Prefab  : ", pylonPrefab, typeof(GameObject), true);
+					GUILayout.Label("Pylon List : " + pylonList.Count);
+					rotatePylons = EditorGUILayout.Toggle("Rotate Pylon : ", rotatePylons);
+
+					using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+					{
+						if(pylonList.Count > 0)
+						{
+							for(int i = 0; i < pylonList.Count; i++)
 							{
-								pylonList.Remove(pylonList[i]);
-								if(pylonList.Count > 1) GenerateBridge();
+								if(pylonList.Count == 0) break;
+
+								if(pylonList[i] != null) pylonList[i] = (GameObject) EditorGUILayout.ObjectField(i + " - ", pylonList[i], typeof(GameObject), true);
+								else
+								{
+									pylonList.Remove(pylonList[i]);
+									if(pylonList.Count > 1) GenerateBridge();
+								}
 							}
 						}
 					}
@@ -59,32 +69,72 @@
 			//DECK
 			using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
 			{
-				EditorGUI.BeginChangeCheck();
-				deckPrefab = (GameObject) EditorGUILayout.ObjectField ("Deck Prefab : ", deckPrefab, typeof(GameObject), true);
-				deckNumber = EditorGUILayout.IntField("Deck Number : ", deckNumber);
-				deckRotate = EditorGUILayout.Toggle("Activate Deck Rotation : ", deckRotate);
-				if(deckRotate) deckLookAt = EditorGUILayout.Toggle("Activate Deck LookAt : ", deckLookAt);
-				gravityForce = EditorGUILayout.Slider("Gravity Force : ", gravityForce, 0, 10);
-				if(EditorGUI.EndChangeCheck())
+				showDeckParameters = EditorGUILayout.Foldout(showDeckParameters, "Deck");
+				if(showDeckParameters)
 				{
-					GenerateBridge();
+					EditorGUI.BeginChangeCheck();
+					deckPrefab = (GameObject) EditorGUILayout.ObjectField ("Deck Prefab : ", deckPrefab, typeof(GameObject), true);
+					deckNumber = EditorGUILayout.IntField("Deck Number : ", deckNumber);
+					deckRotate = EditorGUILayout.Toggle("Activate Deck Rotation : ", deckRotate);
+					if(deckRotate) deckLookAt = EditorGUILayout.Toggle("Activate Deck LookAt : ", deckLookAt);
+					gravityForce = EditorGUILayout.Slider("Gravity Force : ", gravityForce, 0, 10);
+					if(EditorGUI.EndChangeCheck())
+					{
+						GenerateBridge();
+					}
 				}
 			}
 			//ROPE
 			using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
 			{
-				EditorGUI.BeginChangeCheck();
-				generateRope = EditorGUILayout.Toggle("Generate Rope : ", generateRope);
-				if(generateRope)
+				showRopeParameters = EditorGUILayout.Foldout(showRopeParameters, "Rope");
+				if(showRopeParameters)
 				{
-					ropeMat = (Material) EditorGUILayout.ObjectField("Rope Material : ", ropeMat, typeof(Material), true);
-					ropeSize = EditorGUILayout.Slider("Rope Size : ",ropeSize, 0, 0.5f);
-					ropeAttachYPos = EditorGUILayout.Slider("Rope Attach Y Offset : ", ropeAttachYPos, 0, 10);
-					ropeYOffest = EditorGUILayout.Slider("Rope Y Offset : ", ropeYOffest, 0, 2);
+					EditorGUI.BeginChangeCheck();
+					generateRope = EditorGUILayout.Toggle("Generate Rope : ", generateRope);
+					if(generateRope)
+					{
+						ropeMat = (Material) EditorGUILayout.ObjectField("Rope Material : ", ropeMat, typeof(Material), true);
+						ropeSize = EditorGUILayout.Slider("Rope Size : ",ropeSize, 0, 0.5f);
+						ropeAttachYPos = EditorGUILayout.Slider("Rope Attach Y Offset : ", ropeAttachYPos, 0, 10);
+						ropeYOffest = EditorGUILayout.Slider("Rope Y Offset : ", ropeYOffest, 0, 2);
+					}
+					if(EditorGUI.EndChangeCheck())
+					{
+						GenerateBridge();
+					}
 				}
-				if(EditorGUI.EndChangeCheck())
+			}
+
+			
+			//PREFABS
+			using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+			{
+				showPrefabParameters = EditorGUILayout.Foldout(showPrefabParameters, "Prefab");
+				if(showPrefabParameters)
 				{
-					GenerateBridge();
+					using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+					{
+						if(GUILayout.Button("Change Prefab folder", GUILayout.Width((position.width - 27)/2))) SelectPrefabFolder();
+						if(GUILayout.Button("Save Bridge as Prefab", GUILayout.Width((position.width - 27)/2))) SaveBridgeAsPrefab();
+					}
+
+					if(bridgePrefabs.Count > 0)
+					{
+						EditorGUI.BeginDisabledGroup(true);
+						if(prefabDestination != string.Empty) EditorGUILayout.TextField(prefabDestination);
+						using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+						{
+							for(int i = 0; i < bridgePrefabs.Count; i++)
+							{
+								if(bridgePrefabs.Count == 0) break;
+
+								if(bridgePrefabs[i] != null) bridgePrefabs[i] = (GameObject) EditorGUILayout.ObjectField(i + " - ", bridgePrefabs[i], typeof(GameObject), false);
+								else bridgePrefabs.Remove(bridgePrefabs[i]);
+							}
+						}
+						EditorGUI.EndDisabledGroup();
+					}
 				}
 			}
 
@@ -92,20 +142,16 @@
 			using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
 			{
 				EditorGUI.BeginChangeCheck();
-				rotatePylons = EditorGUILayout.Toggle("Rotate Pylon : ", rotatePylons);
+				
 				if(EditorGUI.EndChangeCheck())
 				{
 					GenerateBridge();
 				}
 				using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
 				{
-					if(GUILayout.Button("Preview Bridge")) GenerateBridge();
-					if(GUILayout.Button("Reset Bridge")) ResetBridge();
-				}
-				using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
-				{
-					if(GUILayout.Button("Change Prefab folder")) SelectPrefabFolder();
-					if(GUILayout.Button("Save Bridge as Prefab")) SaveBridgeAsPrefab();
+					if(GUILayout.Button("Preview Bridge", GUILayout.Width((position.width - 31)/3))) GenerateBridge();
+					if(GUILayout.Button("Reset Bridge", GUILayout.Width((position.width - 31)/3))) ResetBridge();
+					if(GUILayout.Button("Save Bridge", GUILayout.Width((position.width - 31)/3))) SaveBridge();
 				}
 			}
 		}
@@ -115,8 +161,11 @@
 		/* BRIDGE */
 		void GenerateBridge()
 		{
-			ResetBridge();
-			RotatePylons();
+			if(pylonList.Count > 1)
+			{
+				ResetBridge();
+				RotatePylons();
+			}
 		}
 
 		void ResetBridge()
@@ -140,25 +189,52 @@
 		{
 			prefabFolder = EditorUtility.OpenFolderPanel("Select prefab folder", "folder", "myPrefab");
 			SaveBridgeAsPrefab();
+			GameObject[] savedPrefabs = (GameObject[]) AssetDatabase.LoadAllAssetsAtPath(prefabFolder);
+			if(savedPrefabs.Length > 0)
+			{
+				bridgePrefabs.Clear();
+				bridgePrefabs.AddRange(savedPrefabs);
+			}
 		}
 		
 		List<GameObject> bridgePrefabs = new List<GameObject>();
 		void SaveBridgeAsPrefab()
 		{
-			GameObject newPrefab = new GameObject("BridgePrefab_" + bridgePrefabs.Count);
+			if(pylonList.Count > 2)
+			{
+				if(!Directory.Exists(prefabFolder))
+				{
+					SelectPrefabFolder();
+				}
+				else
+				{ 
+					GameObject newPrefab = new GameObject("BridgePrefab_" + bridgePrefabs.Count);
+					bridgePrefabs.Add(newPrefab);
+					newPrefab.transform.position = pylonList[0].transform.position;
+
+					foreach(GameObject pylon in pylonList)
+					{
+						pylon.transform.parent = newPrefab.transform;
+					}
+
+					prefabDestination = prefabFolder.Replace(Application.dataPath, string.Empty);
+					PrefabUtility.CreatePrefab("Assets" + prefabDestination + "/" + newPrefab.name + ".prefab", newPrefab);
+				}
+			}
+		}
+
+		void SaveBridge()
+		{
+			GameObject newPrefab = new GameObject("newBridge");
 			newPrefab.transform.position = pylonList[0].transform.position;
 			foreach(GameObject pylon in pylonList)
 			{
 				pylon.transform.parent = newPrefab.transform;
 			}
 
-			if(prefabDestination == string.Empty || !Directory.Exists(prefabFolder))
-				SelectPrefabFolder();
-			else
-			{
-				prefabDestination = prefabFolder.Replace(Application.dataPath, string.Empty);
-				PrefabUtility.CreatePrefab("Assets" + prefabDestination + "/" + newPrefab.name + ".prefab", newPrefab);
-			}
+			pylonList.Clear();
+			deckList.Clear();
+			ropeList.Clear();
 		}
 
 		/* PYLONS */
@@ -229,18 +305,24 @@
 					{
 						if(rotatePylons)
 						{
-							Vector3 lookedPosition = pylonList[i-1].transform.position;
-							lookedPosition.y = pylonList[i].transform.position.y;
-							pylonList[i].transform.LookAt(lookedPosition);
+							if(pylonList[i-1] != null)
+							{
+								Vector3 lookedPosition = pylonList[i-1].transform.position;
+								lookedPosition.y = pylonList[i].transform.position.y;
+								pylonList[i].transform.LookAt(lookedPosition);
+							}
 						} 
 					}
 					else
 					{
 						if(rotatePylons)
 						{
-							Vector3 lookedPosition = pylonList[i+1].transform.position;
-							lookedPosition.y = pylonList[i].transform.position.y;
-							pylonList[i].transform.LookAt(lookedPosition);
+							if(pylonList[i+1] != null)
+							{
+								Vector3 lookedPosition = pylonList[i+1].transform.position;
+								lookedPosition.y = pylonList[i].transform.position.y;
+								pylonList[i].transform.LookAt(lookedPosition);
+							}
 						} 
 						GeneratePlank(pylonList[i], pylonList[i+1]);
 					}
@@ -287,7 +369,7 @@
 		List<GameObject> deckList;
 		void GeneratePlank(GameObject firstPylon, GameObject secondPylon)
 		{
-			if(deckNumber > 0)
+			if(deckNumber > 0 && firstPylon != null && secondPylon != null)
 			{
 				List<GameObject> tempDeckList = new List<GameObject>(0);
 
@@ -368,7 +450,7 @@
 			{
 				//PARENT GAMEOBJECT
 				GameObject rope = new GameObject("ropeRenderer");
-				rope.transform.position = firstPylon.transform.position;
+				rope.transform.position = Vector3.zero;
 				Vector3 localRight = firstPylon.transform.right;
 
 				//RENDERER
@@ -377,6 +459,8 @@
 				ropeRenderer.positionCount = tempDeckList.Count + 2;
 				ropeRenderer.startWidth = ropeSize;
 				ropeRenderer.endWidth = ropeSize;
+				rope.transform.parent = firstPylon.transform;
+				ropeRenderer.useWorldSpace = false;
 
 				if(i == 0) 
 				{
@@ -404,8 +488,6 @@
 					ropeRenderer.SetPosition(j+1, vertexPosition);
 				}
 				
-				rope.transform.parent = firstPylon.transform;
-				//ropeRenderer.useWorldSpace = false;
 				ropeList.Add(rope);
 			}
 		}
