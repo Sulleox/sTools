@@ -6,14 +6,20 @@
 	using UnityEngine;
 	using UnityEngine.Internal;
 
-	public class BridgeConstructor : EditorWindow
+	public class BridgeBuilder : EditorWindow
 	{
 
-		[MenuItem("sTools/BridgeConstructor")]
+		[MenuItem("sTools/Bridge Builder")]
 		static void Init()
 		{
-			BridgeConstructor window = (BridgeConstructor)EditorWindow.GetWindow(typeof(BridgeConstructor));
+			BridgeBuilder window = (BridgeBuilder)EditorWindow.GetWindow(typeof(BridgeBuilder));
 			window.Show();
+			window.GetDefaultValue(); 
+		}
+
+		void GetDefaultValue()
+		{
+			ropeMat = (Material) AssetDatabase.LoadAssetAtPath("/_Tools/Bridge Builder/_Default/", typeof(Material));
 		}
 
 		#region ONGUI
