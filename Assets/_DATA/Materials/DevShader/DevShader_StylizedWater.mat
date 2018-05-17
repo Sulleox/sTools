@@ -83,7 +83,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RimTex:
-        m_Texture: {fileID: 2800000, guid: 8a5035f9cef436b4289f36a5a186f747, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 4, y: 4}
         m_Offset: {x: 0, y: 0}
     - _WaterTex:
@@ -111,7 +111,7 @@ Material:
     - _Parallax: 0.02
     - _RScrollXSpeed: 0.5
     - _RScrollYSpeed: 0.5
-    - _RimAtten: 8.98
+    - _RimAtten: 10
     - _RimSize: 0.623
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -124,4 +124,4 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
-    - _WaterColor: {r: 1, g: 1, b: 1, a: 1}
+    - _WaterColor: {r: 0.9858491, g: 0.9897163, b: 1, a: 1}
