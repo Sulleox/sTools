@@ -40,12 +40,21 @@
 		half4 LightingCelShadingForward(SurfaceOutputStandard s, half3 lightDir, half atten) 
 		{
 			half NormalDotLight = dot(s.Normal, lightDir);
-			half2 uvRamp = half2(0,0);
+			half2 uvRamp = half2(0.5,0.5);
 			uvRamp.x = (NormalDotLight+1)/2;
 			fixed ramp = tex2D (_RampTex, uvRamp);
 
-			half3 temp = ramp * s.Albedo;
-			half4 finalColor = half4(temp.x,temp.y,temp.z,0);
+			half3 newColor = (0,0,0);
+			if (ramp <= 0.5)
+			{
+				newColor = 2 * ramp * s.Albedo;
+			}
+			else
+			{
+				newColor = 1 - 2 * (1-s.Albedo) * (1-ramp);
+			}
+
+			half4 finalColor = half4(newColor.x,newColor.y,newColor.z,0);
 			return finalColor;
 		}
 		ENDCG
