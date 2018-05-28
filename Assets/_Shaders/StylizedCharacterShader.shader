@@ -5,6 +5,7 @@
 		_OutlineColor ("Outline Color", Color) = (0,0,0,1)
         _OutlineWidth ("Outline width", Range (0, 0.2)) = .005
 		_OutlineDepth ("Outline Depth", Range (0, 0.5)) = .1
+		_DepthAtten ("Outline Depth Atten", Range (0, 1)) = 0.5
         _MainTex ("Albedo", 2D) = "white" {}
 		_RampTex ("Ramp Map", 2D) = "grey" {}
 	}
@@ -89,6 +90,7 @@
 		uniform float _OutlineWidth;
 		uniform float _OutlineDepth;
 		uniform float4 _OutlineColor;
+		uniform float _DepthAtten;
 
 		UNITY_INSTANCING_BUFFER_START(Props)
 		UNITY_INSTANCING_BUFFER_END(Props)
@@ -96,7 +98,7 @@
 		void vert(inout appdata_full v)
 		{
 			v.vertex.xyz += v.normal * (_OutlineWidth / 10);
-			v.vertex.xyz -= ObjSpaceViewDir(v.vertex) * _OutlineDepth;
+			v.vertex.xyz -= ObjSpaceViewDir(v.vertex) * (_OutlineDepth/_DepthAtten);
 		}
 
 		void surf (Input IN, inout SurfaceOutput o) 
