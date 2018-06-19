@@ -4,7 +4,7 @@
 	{
 		_OutlineColor ("Outline Color", Color) = (0,0,0,1)
         _OutlineWidth ("Outline width", Range (0, 0.2)) = .005
-		_OutlineDepth ("Outline Depth", Range (0, 0.5)) = .1
+		_OutlineDepth ("Outline Depth", Range (0.1, 0.5)) = .1
         _MainTex ("Albedo", 2D) = "white" {}
 		_RampTex ("Ramp Map", 2D) = "grey" {}
 	}
@@ -66,7 +66,7 @@
 
 		//PASS DRAWING OUTLINE
 		Tags { "Queue" = "Transparent" "RenderMode" = "Opaque" }
-		Cull Front
+		Cull Off
 		CGPROGRAM
 		
 		#pragma surface surf Unlit vertex:vert fullforwardshadows
@@ -96,6 +96,7 @@
 		void vert(inout appdata_full v)
 		{
 			v.vertex.xyz += v.normal * (_OutlineWidth / 10);
+			v.vertex.xyz += ObjSpaceViewDir(v.vertex) * (_OutlineWidth / 10);
 			v.vertex.xyz -= ObjSpaceViewDir(v.vertex) * _OutlineDepth;
 		}
 
