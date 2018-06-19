@@ -384,6 +384,7 @@
 				float deckDistance = bridgeDistance / (deckNumber + 1);
 
 				//GRAVITY
+				/* Computing gravity with the bridge length and the gravity factor */
 				GameObject gravityPoint = new GameObject("Temporary_Gravity_Point");
 				Vector3 gravityPointPosition = firstPylon.transform.position + firstPylon.transform.forward * (bridgeDistance/2);
 				gravityPointPosition.y -= gravityForce;
